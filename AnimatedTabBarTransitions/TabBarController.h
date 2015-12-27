@@ -1,15 +1,13 @@
 //
-//  SecondViewController.h
+//  TabBarController.h
 //  AnimatedTabBarTransitions
 //
-//  Created by AIR on 26.12.15.
+//  Created by AIR on 27.12.15.
 //  Copyright © 2015 Ivan Golikov. All rights reserved.
 //
 
 #import <UIKit/UIKit.h>
 
-@interface SecondViewController : UIViewController
-
+@interface TabBarController : UITabBarController
 
 @end
-

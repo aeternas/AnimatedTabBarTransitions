@@ -7,15 +7,25 @@
 //
 
 #import "AppDelegate.h"
+#import "TabBarController.h"
 
 @interface AppDelegate ()
+
+@property (nonatomic, strong) TabBarController *tbc;
 
 @end
 
 @implementation AppDelegate
 
-
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
+    self.window =[[UIWindow alloc]initWithFrame:[UIScreen mainScreen].bounds];
+    
+    _tbc = [[TabBarController alloc]init];
+    
+    self.window.rootViewController = self.tbc;
+    
+    [self.window makeKeyAndVisible];
+    
     // Override point for customization after application launch.
     return YES;
 }
