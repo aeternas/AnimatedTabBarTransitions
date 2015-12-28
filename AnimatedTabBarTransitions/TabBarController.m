@@ -133,26 +133,34 @@
 
 - (void)tabBar:(UITabBar *)tabBar didSelectItem:(UITabBarItem *)item {
     NSLog(@"selected item is %@", item);
-    [self letDisappearPreviousLayerToItem:item];
+    
+    [self letDisappearPreviousViewToItem:item];
     
 }
 
-- (void)letDisappearPreviousLayerToItem:(UITabBarItem *)item {
-    [UIView animateWithDuration:1.5 delay:0.0 options:UIViewAnimationOptionCurveEaseIn animations:^{
+- (void)letDisappearPreviousViewToItem:(UITabBarItem *)item {
+    [UIView animateWithDuration:1.0 delay:0.0 options:UIViewAnimationOptionCurveEaseIn animations:^{
         CALayer *viewToDisappear = [self.viewsArray objectAtIndex:self.viewPosition];
         CGRect rectForDisappearingView = viewToDisappear.frame;
-        rectForDisappearingView.origin.x = ((UIView *)[self.viewsArray objectAtIndex:[self.tabBar.items indexOfObject:item]]).frame.origin.x;
+        if ([self.tabBar.items indexOfObject:item] > self.viewPosition) {
+            rectForDisappearingView.origin.x = ((UIView *)[self.viewsArray objectAtIndex:[self.tabBar.items indexOfObject:item]]).frame.origin.x;
+        }
         rectForDisappearingView.size.width = 0.0;
         viewToDisappear.frame = rectForDisappearingView;
         [self letRevealItem:item];
+        self.viewPosition = [self.tabBar.items indexOfObject:item];
     } completion:nil];
 }
 
 - (void)letRevealItem:(UITabBarItem *)item {
-    [UIView animateWithDuration:1.5 delay:0.0 options:UIViewAnimationOptionCurveEaseIn animations:^{
+    [UIView animateWithDuration:1.0 delay:0.0 options:UIViewAnimationOptionCurveEaseIn animations:^{
         CALayer *viewToReveal = [self.viewsArray objectAtIndex:[self.tabBar.items indexOfObject:item]];
         CGRect rectForViewToReveal = viewToReveal.frame;
-        rectForViewToReveal.size.width = self.tabBarWidth;
+        if ([self.tabBar.items indexOfObject:item] > self.viewPosition) {
+            rectForViewToReveal.size.width = self.tabBarWidth;
+        } else {
+            rectForViewToReveal.size.width -=self.tabBarWidth;
+        }
         viewToReveal.frame = rectForViewToReveal;
     } completion:nil];
 }
