@@ -76,9 +76,9 @@
     NSLog(@"now item is selected: %u", [self.tabBar.items indexOfObject:self.tabBar.selectedItem]);
     
     self.viewPosition = [self.tabBar.items indexOfObject:self.tabBar.selectedItem];
-
+    
     _actualView = (UIView *)self.viewsArray[self.viewPosition];
-
+    
     [self rectForInitialView];
 }
 
@@ -90,39 +90,85 @@
 }
 
 - (void)tabBar:(UITabBar *)tabBar didSelectItem:(UITabBarItem *)item {
-//    while (self.viewPosition != [self.tabBar.items indexOfObject:item]) {
+    //    while (self.viewPosition != [self.tabBar.items indexOfObject:item]) {
     
-        [self letDisappearPreviousViewToItem:item];
-//    }
+    [self letDisappearPreviousViewToItem:item];
+    //    }
     
 }
 
 - (void)letDisappearPreviousViewToItem:(UITabBarItem *)item {
     int delta = [self.tabBar.items indexOfObject:item] - self.viewPosition;
-    [UIView animateKeyframesWithDuration:1.0 delay:0.0 options:UIViewKeyframeAnimationOptionCalculationModeLinear animations:^{
-        for (CGFloat fl = 0; fl < delta; fl++) {
-            [UIView addKeyframeWithRelativeStartTime:fl / delta relativeDuration:0.5 animations:^{
-                CALayer *viewToDisappear = [self.viewsArray objectAtIndex:self.viewPosition];
-                CGRect rectForDisappearingView = viewToDisappear.frame;
-                if ([self.tabBar.items indexOfObject:item] > self.viewPosition) {
-                    rectForDisappearingView.origin.x = ((UIView *)[self.viewsArray objectAtIndex:self.viewPosition + 1]).frame.origin.x;
-                }
-                rectForDisappearingView.size.width = 0.0;
-                viewToDisappear.frame = rectForDisappearingView;
-                CALayer *viewToReveal = [self.viewsArray objectAtIndex:self.viewPosition + 1];
-                CGRect rectForViewToReveal = viewToReveal.frame;
-                if ([self.tabBar.items indexOfObject:item] > self.viewPosition) {
-                    rectForViewToReveal.size.width = self.tabBarWidth;
-                    self.viewPosition++;
-                } else if ([self.tabBar.items indexOfObject:item] < self.viewPosition) {
-                    rectForViewToReveal.size.width -= self.tabBarWidth;
-                    self.viewPosition--;
-                }
-                viewToReveal.frame = rectForViewToReveal;
-                NSLog(@"%d", self.viewPosition);
+    NSLog(@"delta is %i", delta);
+    CGFloat totalDuration = 1.0;
+    [UIView animateKeyframesWithDuration:totalDuration delay:0.0 options:UIViewKeyframeAnimationOptionCalculationModeLinear animations:^{
+        if (delta > 0) {
+            __block CGFloat relativeStartTime = 0.0;
+            for (int i = 0; i < delta; i++) {
+                CGFloat relativeDuration = (totalDuration / delta);
+                [UIView addKeyframeWithRelativeStartTime:relativeStartTime relativeDuration:relativeDuration animations:^{
+                    relativeStartTime +=relativeDuration;
+                    CALayer *viewToDisappear = [self.viewsArray objectAtIndex:self.viewPosition];
+                    CGRect rectForDisappearingView = viewToDisappear.frame;
+                    if ([self.tabBar.items indexOfObject:item] > self.viewPosition) {
+                        rectForDisappearingView.origin.x = ((UIView *)[self.viewsArray objectAtIndex:self.viewPosition + 1]).frame.origin.x;
+                    }
+                    rectForDisappearingView.size.width = 0.0;
+                    viewToDisappear.frame = rectForDisappearingView;
+                    CALayer *viewToReveal = nil;
+                    if (delta > 0) {
+                        viewToReveal = [self.viewsArray objectAtIndex:self.viewPosition + 1];
+                    } else {
+                        viewToReveal = [self.viewsArray objectAtIndex:self.viewPosition - 1];
+                    }
+                    CGRect rectForViewToReveal = viewToReveal.frame;
+                    if ([self.tabBar.items indexOfObject:item] > self.viewPosition) {
+                        rectForViewToReveal.size.width = self.tabBarWidth;
+                        self.viewPosition++;
+                    } else if ([self.tabBar.items indexOfObject:item] < self.viewPosition) {
+                        rectForViewToReveal.size.width -= self.tabBarWidth;
+                        self.viewPosition--;
+                    }
+                    viewToReveal.frame = rectForViewToReveal;
+                    NSLog(@"%d", self.viewPosition);
+                    
+                }];
                 
-            }];
-        
+            }
+        } else {
+            __block CGFloat relativeStartTime = 0.0;
+            for (int i = 0; i > delta; i--) {
+                CGFloat relativeDuration = (totalDuration / -delta);
+                [UIView addKeyframeWithRelativeStartTime:relativeStartTime relativeDuration:relativeDuration animations:^{
+                    relativeStartTime +=relativeDuration;
+                    CALayer *viewToDisappear = [self.viewsArray objectAtIndex:self.viewPosition];
+                    CGRect rectForDisappearingView = viewToDisappear.frame;
+                    if ([self.tabBar.items indexOfObject:item] > self.viewPosition) {
+                        rectForDisappearingView.origin.x = ((UIView *)[self.viewsArray objectAtIndex:self.viewPosition + 1]).frame.origin.x;
+                    }
+                    rectForDisappearingView.size.width = 0.0;
+                    viewToDisappear.frame = rectForDisappearingView;
+                    CALayer *viewToReveal = nil;
+                    if (delta > 0) {
+                        viewToReveal = [self.viewsArray objectAtIndex:self.viewPosition + 1];
+                    } else {
+                        viewToReveal = [self.viewsArray objectAtIndex:self.viewPosition - 1];
+                    }
+                    CGRect rectForViewToReveal = viewToReveal.frame;
+                    if ([self.tabBar.items indexOfObject:item] > self.viewPosition) {
+                        rectForViewToReveal.size.width = self.tabBarWidth;
+                        self.viewPosition++;
+                    } else if ([self.tabBar.items indexOfObject:item] < self.viewPosition) {
+                        rectForViewToReveal.size.width -= self.tabBarWidth;
+                        self.viewPosition--;
+                    }
+                    viewToReveal.frame = rectForViewToReveal;
+                    NSLog(@"%d", self.viewPosition);
+                    
+                }];
+                
+            }
+            
         }
     } completion:nil];
 }
