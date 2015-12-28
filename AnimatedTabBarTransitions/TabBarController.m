@@ -8,13 +8,17 @@
 
 #import "TabBarController.h"
 
-@interface TabBarController ()
+@interface TabBarController () <UITabBarControllerDelegate, UITabBarDelegate>
 
 @property (nonatomic, strong) UIView        *firstTabBarView;
 @property (nonatomic, strong) UIView        *secondTabBarView;
 @property (nonatomic, strong) UIView        *thirdTabBarView;
 
+@property (nonatomic, readonly) NSArray     *viewsArray;
+
 @property (nonatomic, assign) CGFloat       tabBarWidth;
+
+@property (nonatomic, strong) UIView        *actualView;
 
 @end
 
@@ -29,9 +33,13 @@
     
     UIViewController *thirdVC = [UIViewController new];
     
+    UIViewController *fourVC = [UIViewController new];
+    
+    UIViewController *fiveVC = [UIViewController new];
+    
 //    firstVC.view.backgroundColor = [UIColor greenColor];
     
-    self.viewControllers = [[NSArray alloc]initWithObjects:firstVC, secondVC, thirdVC, nil];
+    self.viewControllers = [[NSArray alloc]initWithObjects:firstVC, secondVC, thirdVC, fourVC, fiveVC, nil];
     
     CALayer *layer = [CALayer new];
     layer.backgroundColor = [UIColor redColor].CGColor;
@@ -42,12 +50,47 @@
     
     UITabBarItem *tabBarItemThree = [self.tabBar.items objectAtIndex:2];
     
+    UITabBarItem *tabBarItemFour = [self.tabBar.items objectAtIndex:3];
+    
+    UITabBarItem *tabBarItemFive = [self.tabBar.items objectAtIndex:4];
+    
     self.tabBarWidth = self.tabBar.frame.size.width / self.viewControllers.count;
     
     tabBarItemOne.title = @"FirstVC";
     tabBarItemTwo.title = @"SecondVC";
     tabBarItemThree.title = @"ThirdVC";
+    tabBarItemFour.title = @"FourthVC";
+    tabBarItemFive.title = @"FifthVC";
     
+    NSMutableArray *viewsMutableArray = [NSMutableArray new];
+    
+    NSArray *colors = [[NSArray alloc]initWithObjects:[UIColor redColor], [UIColor orangeColor], [UIColor blueColor], [UIColor magentaColor], [UIColor greenColor], nil];
+    
+    NSLog(@"%s %@", __PRETTY_FUNCTION__, self.tabBar.subviews);
+    
+    for (int i = 0; i < self.tabBar.items.count; i++) {
+        UIView *view = [[UIView alloc]initWithFrame:CGRectMake(self.tabBar.subviews[i].frame.origin.x, 0.0, 0.0, self.tabBar.frame.size.height)];
+        view.backgroundColor = colors[i];
+        view.alpha = 0.4;
+        [self.tabBar addSubview:view];
+        [viewsMutableArray addObject:view];
+    }
+    
+    _viewsArray = viewsMutableArray.copy;
+    
+    NSLog(@"view frames are %@", self.viewsArray);
+    
+    NSLog(@"tabbaritem frames are %.2f", self.tabBar.subviews[1].frame.origin.x);
+    
+    NSLog(@"now item is selected: %u", [self.tabBar.items indexOfObject:self.tabBar.selectedItem]);
+    
+    [self rectForInitialItem];
+    
+    _actualView = [self.viewsArray objectAtIndex:[self.tabBar.items indexOfObject:self.tabBar.selectedItem]];
+    
+//    UIView *view = [[UIView alloc]initWithFrame:CGRectMake(self.tabBar.frame.size.width * (1.0 / (i + 1)) , 0.0, 0.0, self.tabBar.frame.size.height)];
+    
+    /*
     _firstTabBarView = [[UIView alloc]initWithFrame:CGRectMake(0.0, 0.0, self.tabBarWidth, self.tabBar.frame.size.height)];
     
     self.firstTabBarView.backgroundColor = [UIColor redColor];
@@ -71,10 +114,35 @@
     self.thirdTabBarView.userInteractionEnabled = NO;
     
     [self.tabBar addSubview:self.thirdTabBarView];
+    */
     
-    UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(clickAction)];
-    [self.view addGestureRecognizer:tap];
     
+}
+
+- (void)rectForInitialItem {
+    UIView *initialView = [self.viewsArray objectAtIndex:[self.tabBar.items indexOfObject:self.tabBar.selectedItem]];
+    CGRect initialRect = initialView.frame;
+    initialRect.size.width = self.tabBarWidth;
+    initialView.frame = initialRect;
+}
+
+- (void)tabBar:(UITabBar *)tabBar didSelectItem:(UITabBarItem *)item {
+    NSLog(@"selected item is %@", item);
+    [self animateToItem:item];
+    
+}
+
+
+
+- (void)animateToItem:(UITabBarItem *)item {
+    [UIView animateWithDuration:1.0 delay:0.0 options:UIViewAnimationOptionCurveEaseIn animations:^{
+        UIView *viewToMove = self.actualView;
+        UIView *correspondingView = [self.viewsArray objectAtIndex:[self.tabBar.items indexOfObject:item]];
+        CGRect rectToMoveTo = viewToMove.frame;
+        rectToMoveTo.origin.x = correspondingView.frame.origin.x;
+        rectToMoveTo.size.width = self.tabBarWidth;
+        viewToMove.frame = rectToMoveTo;
+    } completion:nil];
 }
 
 - (void)clickAction {
