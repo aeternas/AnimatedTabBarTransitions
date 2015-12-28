@@ -14,11 +14,13 @@
 @property (nonatomic, strong) UIView        *secondTabBarView;
 @property (nonatomic, strong) UIView        *thirdTabBarView;
 
-@property (nonatomic, readonly) NSArray     *viewsArray;
+@property (nonatomic, readonly) NSArray     *layersArray;
 
 @property (nonatomic, assign) CGFloat       tabBarWidth;
 
 @property (nonatomic, strong) UIView        *actualView;
+
+@property (nonatomic, assign) NSInteger     viewPosition;
 
 @end
 
@@ -41,9 +43,6 @@
     
     self.viewControllers = [[NSArray alloc]initWithObjects:firstVC, secondVC, thirdVC, fourVC, fiveVC, nil];
     
-    CALayer *layer = [CALayer new];
-    layer.backgroundColor = [UIColor redColor].CGColor;
-    
     UITabBarItem *tabBarItemOne = [self.tabBar.items objectAtIndex:0];
     
     UITabBarItem *tabBarItemTwo = [self.tabBar.items objectAtIndex:1];
@@ -62,8 +61,6 @@
     tabBarItemFour.title = @"FourthVC";
     tabBarItemFive.title = @"FifthVC";
     
-    NSMutableArray *viewsMutableArray = [NSMutableArray new];
-    
     NSArray *colors = [[NSArray alloc]initWithObjects:[UIColor redColor], [UIColor orangeColor], [UIColor blueColor], [UIColor magentaColor], [UIColor greenColor], nil];
     
     NSMutableArray *layers = [NSMutableArray new];
@@ -71,27 +68,27 @@
     NSLog(@"%s %@", __PRETTY_FUNCTION__, self.tabBar.subviews);
     
     for (int i = 0; i < self.tabBar.items.count; i++) {
-        UIView *view = [[UIView alloc]initWithFrame:CGRectMake(self.tabBar.subviews[i].frame.origin.x, 0.0, 0.0, self.tabBar.frame.size.height)];
         CALayer *layer = [CALayer new];
-        layer.frame = view.frame;
+        layer.frame = CGRectMake(i * (self.tabBar.frame.size.width / (self.tabBar.items.count)), 0.0, 0.0, self.tabBar.frame.size.height);
+        layer.opacity = 0.4;
         layer.backgroundColor = ((UIColor *)colors[i]).CGColor;
-        view.alpha = 0.4;
-        [self.tabBar addSubview:view];
-        [viewsMutableArray addObject:view];
+        [self.tabBar.layer addSublayer:layer];
         [layers addObject:layer];
+        
     }
     
-    _viewsArray = viewsMutableArray.copy;
-    
-    NSLog(@"view frames are %@", self.viewsArray);
+    _layersArray = layers.copy;
     
     NSLog(@"tabbaritem frames are %.2f", self.tabBar.subviews[1].frame.origin.x);
     
     NSLog(@"now item is selected: %u", [self.tabBar.items indexOfObject:self.tabBar.selectedItem]);
     
-    [self rectForInitialItem];
+    _actualView = [[UIView alloc]initWithFrame:((CALayer *)self.layersArray[0]).frame];
+    self.viewPosition = 0;
     
-    _actualView = [self.viewsArray objectAtIndex:[self.tabBar.items indexOfObject:self.tabBar.selectedItem]];
+    [self.tabBar addSubview:self.actualView];
+    
+    [self rectForInitialLayer];
     
 //    UIView *view = [[UIView alloc]initWithFrame:CGRectMake(self.tabBar.frame.size.width * (1.0 / (i + 1)) , 0.0, 0.0, self.tabBar.frame.size.height)];
     
@@ -124,11 +121,11 @@
     
 }
 
-- (void)rectForInitialItem {
-    UIView *initialView = [self.viewsArray objectAtIndex:[self.tabBar.items indexOfObject:self.tabBar.selectedItem]];
-    CGRect initialRect = initialView.frame;
-    initialRect.size.width = self.tabBarWidth;
-    initialView.frame = initialRect;
+- (void)rectForInitialLayer {
+    CGRect layerFrame = ((CALayer *)self.layersArray[0]).frame;
+    layerFrame.size.width = self.tabBarWidth;
+    ((CALayer *)self.layersArray[0]).frame = layerFrame;
+    
 }
 
 - (void)tabBar:(UITabBar *)tabBar didSelectItem:(UITabBarItem *)item {
@@ -138,15 +135,12 @@
 }
 
 - (void)animateToItem:(UITabBarItem *)item {
-    [UIView animateWithDuration:1.0 delay:0.0 options:UIViewAnimationOptionCurveEaseIn animations:^{
-        CALayer *layer = [CALayer new];
-        UIView *viewToMove = self.actualView;
-        UIView *correspondingView = [self.viewsArray objectAtIndex:[self.tabBar.items indexOfObject:item]];
-        CGRect rectToMoveTo = viewToMove.frame;
-        rectToMoveTo.origin.x = correspondingView.frame.origin.x;
-        rectToMoveTo.size.width = self.tabBarWidth;
-        viewToMove.frame = rectToMoveTo;
-        self.actualView.frame = viewToMove.frame;
+    [UIView animateWithDuration:1.5 delay:0.0 options:UIViewAnimationOptionCurveEaseIn animations:^{
+        CALayer *layerToDisappear = [self.layersArray objectAtIndex:self.viewPosition];
+        CGRect rectForDisappearingLayer = layerToDisappear.frame;
+        rectForDisappearingLayer.origin.x = ((CALayer *)[self.layersArray objectAtIndex:[self.tabBar.items indexOfObject:item]]).frame.origin.x;
+        layerToDisappear.frame = rectForDisappearingLayer;
+        
     } completion:nil];
 }
 
