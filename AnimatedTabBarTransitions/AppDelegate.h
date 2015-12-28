@@ -3,7 +3,7 @@
 //  AnimatedTabBarTransitions
 //
 //  Created by Ivan Golikov on 26.12.15.
-//  Copyright © 2015 Ivan Golikov. All rights reserved.
+//  Copyright © 2015 Octoberry. All rights reserved.
 //
 
 #import <UIKit/UIKit.h>
