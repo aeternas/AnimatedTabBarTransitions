@@ -2,7 +2,7 @@
 //  TabBarController.m
 //  AnimatedTabBarTransitions
 //
-//  Created by AIR on 27.12.15.
+//  Created by Ivan Golikov on 27.12.15.
 //  Copyright © 2015 Ivan Golikov. All rights reserved.
 //
 
