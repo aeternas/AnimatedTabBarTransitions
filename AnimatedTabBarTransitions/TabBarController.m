@@ -8,11 +8,7 @@
 
 #import "TabBarController.h"
 
-@interface TabBarController () <UITabBarControllerDelegate, UITabBarDelegate>
-
-@property (nonatomic, strong) UIView        *firstTabBarView;
-@property (nonatomic, strong) UIView        *secondTabBarView;
-@property (nonatomic, strong) UIView        *thirdTabBarView;
+@interface TabBarController ()
 
 @property (nonatomic, readonly) NSArray     *viewsArray;
 
@@ -30,25 +26,23 @@
     [super viewDidLoad];
     
     UIViewController *firstVC = [UIViewController new];
-    
     UIViewController *secondVC = [UIViewController new];
-    
     UIViewController *thirdVC = [UIViewController new];
-    
     UIViewController *fourVC = [UIViewController new];
-    
     UIViewController *fiveVC = [UIViewController new];
+    
+    firstVC.view.backgroundColor = [UIColor greenColor];
+    secondVC.view.backgroundColor = [UIColor yellowColor];
+    thirdVC.view.backgroundColor = [UIColor blueColor];
+    fourVC.view.backgroundColor = [UIColor magentaColor];
+    fiveVC.view.backgroundColor = [UIColor grayColor];
     
     self.viewControllers = [[NSArray alloc]initWithObjects:firstVC, secondVC, thirdVC, fourVC, fiveVC, nil];
     
     UITabBarItem *tabBarItemOne = [self.tabBar.items objectAtIndex:0];
-    
     UITabBarItem *tabBarItemTwo = [self.tabBar.items objectAtIndex:1];
-    
     UITabBarItem *tabBarItemThree = [self.tabBar.items objectAtIndex:2];
-    
     UITabBarItem *tabBarItemFour = [self.tabBar.items objectAtIndex:3];
-    
     UITabBarItem *tabBarItemFive = [self.tabBar.items objectAtIndex:4];
     
     self.tabBarWidth = self.tabBar.frame.size.width / self.viewControllers.count;
@@ -90,10 +84,7 @@
 }
 
 - (void)tabBar:(UITabBar *)tabBar didSelectItem:(UITabBarItem *)item {
-    //    while (self.viewPosition != [self.tabBar.items indexOfObject:item]) {
-    
     [self letDisappearPreviousViewToItem:item];
-    //    }
     
 }
 

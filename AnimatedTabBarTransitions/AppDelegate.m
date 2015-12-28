@@ -9,7 +9,7 @@
 #import "AppDelegate.h"
 #import "TabBarController.h"
 
-@interface AppDelegate ()
+@interface AppDelegate () <UITabBarControllerDelegate>
 
 @property (nonatomic, strong) TabBarController *tbc;
 
@@ -22,12 +22,51 @@
     
     _tbc = [[TabBarController alloc]init];
     
+    _tbc.delegate = self;
+    
     self.window.rootViewController = self.tbc;
     
     [self.window makeKeyAndVisible];
     
-    // Override point for customization after application launch.
     return YES;
+}
+
+-(BOOL)tabBarController:(UITabBarController *)tabBarController shouldSelectViewController:(UIViewController *)viewController {
+    NSUInteger controllerIndex = [self.tbc.viewControllers indexOfObject:viewController];
+    
+    if (controllerIndex == tabBarController.selectedIndex) {
+        return NO;
+    }
+    
+    UIView *fromView = tabBarController.selectedViewController.view;
+    UIView *toView = [tabBarController.viewControllers[controllerIndex] view];
+    
+    CGRect viewSize = fromView.frame;
+    BOOL scrollRight = controllerIndex > tabBarController.selectedIndex;
+    
+    [fromView.superview addSubview:toView];
+    
+    CGFloat screenWidth = [UIScreen mainScreen].bounds.size.width;
+    toView.frame = CGRectMake((scrollRight ? screenWidth : -screenWidth), viewSize.origin.y, screenWidth, viewSize.size.height);
+    
+    [UIView animateWithDuration:0.2
+                          delay:0
+                        options:UIViewAnimationOptionCurveEaseInOut
+                     animations:^{
+                         
+                         fromView.frame = CGRectMake((scrollRight ? -screenWidth : screenWidth), viewSize.origin.y, screenWidth, viewSize.size.height);
+                         toView.frame = CGRectMake(0, viewSize.origin.y, screenWidth, viewSize.size.height);
+                     }
+     
+                     completion:^(BOOL finished) {
+                         if (finished) {
+                             
+                             [fromView removeFromSuperview];
+                             tabBarController.selectedIndex = controllerIndex;
+                         }
+                     }];
+    
+    return NO;
 }
 
 - (void)applicationWillResignActive:(UIApplication *)application {
