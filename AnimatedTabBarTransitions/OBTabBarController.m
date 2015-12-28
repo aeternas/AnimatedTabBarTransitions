@@ -6,9 +6,9 @@
 //  Copyright © 2015 Octoberry. All rights reserved.
 //
 
-#import "TabBarController.h"
+#import "OBTabBarController.h"
 
-@interface TabBarController ()
+@interface OBTabBarController ()
 
 @property (nonatomic, readonly) NSArray     *viewsArray;
 
@@ -20,7 +20,7 @@
 
 @end
 
-@implementation TabBarController
+@implementation OBTabBarController
 
 - (void)viewDidLoad {
     [super viewDidLoad];
