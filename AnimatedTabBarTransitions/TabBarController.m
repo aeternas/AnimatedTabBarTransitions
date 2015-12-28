@@ -12,11 +12,11 @@
 
 @property (nonatomic, readonly) NSArray     *viewsArray;
 
-@property (nonatomic, assign) CGFloat       tabBarWidth;
-
 @property (nonatomic, strong) UIView        *actualView;
 
 @property (nonatomic, assign) NSInteger     viewPosition;
+
+@property (nonatomic, assign) CGFloat       tabBarWidth;
 
 @end
 
@@ -67,8 +67,6 @@
     
     _viewsArray = views.copy;
     
-    NSLog(@"now item is selected: %u", [self.tabBar.items indexOfObject:self.tabBar.selectedItem]);
-    
     self.viewPosition = [self.tabBar.items indexOfObject:self.tabBar.selectedItem];
     
     _actualView = (UIView *)self.viewsArray[self.viewPosition];
@@ -89,8 +87,7 @@
 }
 
 - (void)letDisappearPreviousViewToItem:(UITabBarItem *)item {
-    int delta = [self.tabBar.items indexOfObject:item] - self.viewPosition;
-    NSLog(@"delta is %i", delta);
+    NSInteger delta = [self.tabBar.items indexOfObject:item] - self.viewPosition;
     CGFloat totalDuration = 1.0;
     [UIView animateKeyframesWithDuration:totalDuration delay:0.0 options:UIViewKeyframeAnimationOptionCalculationModeLinear animations:^{
         if (delta > 0) {
@@ -121,7 +118,6 @@
                         self.viewPosition--;
                     }
                     viewToReveal.frame = rectForViewToReveal;
-                    NSLog(@"%d", self.viewPosition);
                     
                 }];
                 
@@ -154,7 +150,6 @@
                         self.viewPosition--;
                     }
                     viewToReveal.frame = rectForViewToReveal;
-                    NSLog(@"%d", self.viewPosition);
                     
                 }];
                 
