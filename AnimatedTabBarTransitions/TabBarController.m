@@ -3,7 +3,7 @@
 //  AnimatedTabBarTransitions
 //
 //  Created by Ivan Golikov on 27.12.15.
-//  Copyright © 2015 Ivan Golikov. All rights reserved.
+//  Copyright © 2015 Octoberry. All rights reserved.
 //
 
 #import "TabBarController.h"
@@ -66,14 +66,19 @@
     
     NSArray *colors = [[NSArray alloc]initWithObjects:[UIColor redColor], [UIColor orangeColor], [UIColor blueColor], [UIColor magentaColor], [UIColor greenColor], nil];
     
+    NSMutableArray *layers = [NSMutableArray new];
+    
     NSLog(@"%s %@", __PRETTY_FUNCTION__, self.tabBar.subviews);
     
     for (int i = 0; i < self.tabBar.items.count; i++) {
         UIView *view = [[UIView alloc]initWithFrame:CGRectMake(self.tabBar.subviews[i].frame.origin.x, 0.0, 0.0, self.tabBar.frame.size.height)];
-        view.backgroundColor = colors[i];
+        CALayer *layer = [CALayer new];
+        layer.frame = view.frame;
+        layer.backgroundColor = ((UIColor *)colors[i]).CGColor;
         view.alpha = 0.4;
         [self.tabBar addSubview:view];
         [viewsMutableArray addObject:view];
+        [layers addObject:layer];
     }
     
     _viewsArray = viewsMutableArray.copy;
@@ -132,16 +137,16 @@
     
 }
 
-
-
 - (void)animateToItem:(UITabBarItem *)item {
     [UIView animateWithDuration:1.0 delay:0.0 options:UIViewAnimationOptionCurveEaseIn animations:^{
+        CALayer *layer = [CALayer new];
         UIView *viewToMove = self.actualView;
         UIView *correspondingView = [self.viewsArray objectAtIndex:[self.tabBar.items indexOfObject:item]];
         CGRect rectToMoveTo = viewToMove.frame;
         rectToMoveTo.origin.x = correspondingView.frame.origin.x;
         rectToMoveTo.size.width = self.tabBarWidth;
         viewToMove.frame = rectToMoveTo;
+        self.actualView.frame = viewToMove.frame;
     } completion:nil];
 }
 
