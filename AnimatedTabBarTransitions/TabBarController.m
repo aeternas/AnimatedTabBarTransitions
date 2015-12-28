@@ -12,6 +12,7 @@
 
 @property (nonatomic, strong) UIView        *firstTabBarView;
 @property (nonatomic, strong) UIView        *secondTabBarView;
+@property (nonatomic, strong) UIView        *thirdTabBarView;
 
 @property (nonatomic, assign) CGFloat       tabBarWidth;
 
@@ -28,7 +29,7 @@
     
     UIViewController *thirdVC = [UIViewController new];
     
-    firstVC.view.backgroundColor = [UIColor greenColor];
+//    firstVC.view.backgroundColor = [UIColor greenColor];
     
     self.viewControllers = [[NSArray alloc]initWithObjects:firstVC, secondVC, thirdVC, nil];
     
@@ -50,7 +51,7 @@
     _firstTabBarView = [[UIView alloc]initWithFrame:CGRectMake(0.0, 0.0, self.tabBarWidth, self.tabBar.frame.size.height)];
     
     self.firstTabBarView.backgroundColor = [UIColor redColor];
-    self.firstTabBarView.alpha = 0.2;
+    self.firstTabBarView.alpha = 0.5;
     self.firstTabBarView.userInteractionEnabled = NO;
     
     [self.tabBar addSubview:self.firstTabBarView];
@@ -58,10 +59,18 @@
     _secondTabBarView = [[UIView alloc]initWithFrame:CGRectMake(self.tabBarWidth, 0.0, 0.0, self.tabBar.frame.size.height)];
     
     self.secondTabBarView.backgroundColor = [UIColor blueColor];
-    self.secondTabBarView.alpha = 0.2;
+    self.secondTabBarView.alpha = 0.5;
     self.secondTabBarView.userInteractionEnabled = NO;
     
     [self.tabBar addSubview:self.secondTabBarView];
+    
+    _thirdTabBarView = [[UIView alloc]initWithFrame:CGRectMake(self.tabBarWidth * 2.0, 0.0, 0.0, self.tabBar.frame.size.height)];
+    
+    self.thirdTabBarView.backgroundColor = [UIColor greenColor];
+    self.thirdTabBarView.alpha = 0.5;
+    self.thirdTabBarView.userInteractionEnabled = NO;
+    
+    [self.tabBar addSubview:self.thirdTabBarView];
     
     UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(clickAction)];
     [self.view addGestureRecognizer:tap];
@@ -69,7 +78,7 @@
 }
 
 - (void)clickAction {
-    [UIView animateWithDuration:1.5 delay:0.0 options:UIViewAnimationOptionCurveEaseIn animations:^{
+    [UIView animateWithDuration:0.5 delay:0.0 options:UIViewAnimationOptionTransitionNone animations:^{
         CGRect firstRect = self.firstTabBarView.frame;
         firstRect.origin.x = self.tabBarWidth;
         firstRect.size.width = 0.0;
@@ -78,15 +87,15 @@
         secondRect.size.width = self.tabBarWidth;
         self.secondTabBarView.frame = secondRect;
     } completion:^(BOOL finished) {
-        [UIView animateWithDuration:1.5 delay:0.0 options:UIViewAnimationOptionCurveEaseIn animations:^{
-            CGRect firstRect = self.firstTabBarView.frame;
-            firstRect.origin.x = self.tabBarWidth;
-            firstRect.size.width = 0.0;
-            self.firstTabBarView.frame = firstRect;
+        [UIView animateWithDuration:1.0 delay:0.0 options:UIViewAnimationOptionCurveEaseIn animations:^{
             CGRect secondRect = self.secondTabBarView.frame;
-            secondRect.size.width = self.tabBarWidth;
+            secondRect.origin.x = self.tabBarWidth * 2.0;
+            secondRect.size.width = 0.0;
             self.secondTabBarView.frame = secondRect;
-        } completion:<#^(BOOL finished)completion#>]
+            CGRect thirdRect = self.thirdTabBarView.frame;
+            thirdRect.size.width = self.tabBarWidth;
+            self.thirdTabBarView.frame = thirdRect;
+        } completion:nil];
     }];
 }
 
