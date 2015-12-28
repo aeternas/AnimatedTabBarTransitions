@@ -7,11 +7,11 @@
 //
 
 #import "AppDelegate.h"
-#import "TabBarController.h"
+#import "OBTabBarController.h"
 
 @interface AppDelegate () <UITabBarControllerDelegate>
 
-@property (nonatomic, strong) TabBarController *tbc;
+@property (nonatomic, strong) OBTabBarController *tbc;
 
 @end
 
@@ -20,7 +20,7 @@
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     self.window =[[UIWindow alloc]initWithFrame:[UIScreen mainScreen].bounds];
     
-    _tbc = [[TabBarController alloc]init];
+    _tbc = [[OBTabBarController alloc]init];
     
     _tbc.delegate = self;
     

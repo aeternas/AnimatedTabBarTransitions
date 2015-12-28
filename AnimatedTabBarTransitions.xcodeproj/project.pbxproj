@@ -11,7 +11,7 @@
 		45C25C481C2EAE93007DF5E7 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 45C25C471C2EAE93007DF5E7 /* AppDelegate.m */; };
 		45C25C531C2EAE93007DF5E7 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 45C25C521C2EAE93007DF5E7 /* Assets.xcassets */; };
 		45C25C561C2EAE93007DF5E7 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 45C25C541C2EAE93007DF5E7 /* LaunchScreen.storyboard */; };
-		45C25C741C3040C6007DF5E7 /* TabBarController.m in Sources */ = {isa = PBXBuildFile; fileRef = 45C25C731C3040C6007DF5E7 /* TabBarController.m */; };
+		45C25C741C3040C6007DF5E7 /* OBTabBarController.m in Sources */ = {isa = PBXBuildFile; fileRef = 45C25C731C3040C6007DF5E7 /* OBTabBarController.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -22,8 +22,8 @@
 		45C25C521C2EAE93007DF5E7 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		45C25C551C2EAE93007DF5E7 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		45C25C571C2EAE93007DF5E7 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		45C25C721C3040C6007DF5E7 /* TabBarController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TabBarController.h; sourceTree = "<group>"; };
-		45C25C731C3040C6007DF5E7 /* TabBarController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TabBarController.m; sourceTree = "<group>"; };
+		45C25C721C3040C6007DF5E7 /* OBTabBarController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OBTabBarController.h; sourceTree = "<group>"; };
+		45C25C731C3040C6007DF5E7 /* OBTabBarController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OBTabBarController.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -58,8 +58,8 @@
 			children = (
 				45C25C461C2EAE93007DF5E7 /* AppDelegate.h */,
 				45C25C471C2EAE93007DF5E7 /* AppDelegate.m */,
-				45C25C721C3040C6007DF5E7 /* TabBarController.h */,
-				45C25C731C3040C6007DF5E7 /* TabBarController.m */,
+				45C25C721C3040C6007DF5E7 /* OBTabBarController.h */,
+				45C25C731C3040C6007DF5E7 /* OBTabBarController.m */,
 				45C25C521C2EAE93007DF5E7 /* Assets.xcassets */,
 				45C25C541C2EAE93007DF5E7 /* LaunchScreen.storyboard */,
 				45C25C571C2EAE93007DF5E7 /* Info.plist */,
@@ -145,7 +145,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				45C25C741C3040C6007DF5E7 /* TabBarController.m in Sources */,
+				45C25C741C3040C6007DF5E7 /* OBTabBarController.m in Sources */,
 				45C25C481C2EAE93007DF5E7 /* AppDelegate.m in Sources */,
 				45C25C451C2EAE93007DF5E7 /* main.m in Sources */,
 			);

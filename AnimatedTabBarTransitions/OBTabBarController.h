@@ -1,5 +1,5 @@
 //
-//  TabBarController.h
+//  OBTabBarController.h
 //  AnimatedTabBarTransitions
 //
 //  Created by Ivan Golikov on 27.12.15.
@@ -8,6 +8,8 @@
 
 #import <UIKit/UIKit.h>
 
-@interface TabBarController : UITabBarController
+extern NSString *const OBTabBarControllerErrorDomain;
+
+@interface OBTabBarController : UITabBarController
 
 @end
