@@ -20,6 +20,7 @@ CGFloat const animationDuration = 1.0;
 @property (nonatomic, readonly) UIView      *actualView;
 
 @property (nonatomic, assign) NSInteger     viewPosition;
+@property (nonatomic, assign) NSInteger     secondViewPosition;
 
 @property (nonatomic, assign) CGFloat       tabBarWidth;
 
@@ -83,6 +84,7 @@ CGFloat const animationDuration = 1.0;
     
     // setting position for initially selected tab bar item
     self.viewPosition = [self.tabBar.items indexOfObject:self.tabBar.selectedItem];
+    self.secondViewPosition = self.viewPosition;
     
     // active view
     _actualView = (UIView *)self.viewsArray[self.viewPosition];
@@ -106,11 +108,10 @@ CGFloat const animationDuration = 1.0;
 }
 
 - (void)animateDisappearance:(UITabBarItem *)item {
-    /*
-    NSInteger delta = [self.tabBar.items indexOfObject:item] - self.viewPosition;
-    delta = -delta;
-     */
-    NSInteger delta = -2;
+    
+    NSInteger delta = self.secondViewPosition - [self.tabBar.items indexOfObject:item];
+    
+//    NSInteger delta = -2;
     CGFloat disappearanceRate = 0.9;
     NSError *error = [NSError errorWithDomain:OBTabBarControllerErrorDomain code:0 userInfo:nil];
     NSInteger modulusDelta = labs(delta);
@@ -123,19 +124,22 @@ CGFloat const animationDuration = 1.0;
             [UIView addKeyframeWithRelativeStartTime:relativeStartTimeForAppearingView relativeDuration:relativeDuration animations:^{
                 
                 UIView *viewToReveal = nil;
-
-                    viewToReveal = [self.viewsArray objectAtIndex:self.viewPosition - 1];
+                
+                viewToReveal = [self.viewsArray objectAtIndex:self.viewPosition - 1];
                 
                 CGRect rectForViewToReveal = viewToReveal.frame;
-
-                    rectForViewToReveal.size.width -= self.tabBarWidth;
-                    self.viewPosition--;
+//                rectForViewToReveal.origin.x -= rectForViewToReveal.size.width;
+                
+//                rectForViewToReveal.size.width -= self.tabBarWidth;
+                rectForViewToReveal.origin.x = ((UIView *)[self.viewsArray objectAtIndex:self.viewPosition - 0]).frame.origin.x;
+                rectForViewToReveal.size.width = 0.0;
+                self.viewPosition--; // !!
                 
                 viewToReveal.frame = rectForViewToReveal;
                 relativeStartTimeForAppearingView += relativeDuration;
             }];
         }
-
+        
     } completion:nil];
 }
 
