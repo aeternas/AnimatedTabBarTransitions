@@ -104,9 +104,14 @@ NSString *const OBTabBarControllerErrorDomain = @"OBTabBarControllerErrorDomain"
         __block CGFloat relativeStartTimeForDisappearingView = 0.5;
         for (int i = 0; i < modulusDelta; i++) {
             CGFloat relativeDuration = (totalDuration / modulusDelta);
-            // using "child" keyframe animations
             
+            
+            
+            // using "child" keyframe animations
             [UIView addKeyframeWithRelativeStartTime:relativeStartTimeForDisappearingView relativeDuration:relativeDuration animations:^{
+                
+                relativeStartTimeForDisappearingView += relativeDuration;
+                
                 UIView *viewToDisappear = [self.viewsArray objectAtIndex:self.viewPosition];
                 CGRect rectForDisappearingView = viewToDisappear.frame;
                 if ([self.tabBar.items indexOfObject:item] > self.viewPosition) {
@@ -118,7 +123,7 @@ NSString *const OBTabBarControllerErrorDomain = @"OBTabBarControllerErrorDomain"
             
             [UIView addKeyframeWithRelativeStartTime:relativeStartTimeForAppearingView relativeDuration:relativeDuration animations:^{
                 relativeStartTimeForAppearingView += relativeDuration;
-                
+
                 UIView *viewToReveal = nil;
                 if (delta > 0) {
                     viewToReveal = [self.viewsArray objectAtIndex:self.viewPosition + 1];
