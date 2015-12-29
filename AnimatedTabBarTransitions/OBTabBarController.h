@@ -10,6 +10,8 @@
 
 extern NSString *const OBTabBarControllerErrorDomain;
 
+extern CGFloat const animationDuration;
+
 @interface OBTabBarController : UITabBarController
 
 @end

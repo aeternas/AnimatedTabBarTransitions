@@ -10,6 +10,9 @@
 
 NSString *const OBTabBarControllerErrorDomain = @"OBTabBarControllerErrorDomain";
 
+// globally define animation duration both for VCs and tabBarItems animations
+CGFloat const animationDuration = 1.0;
+
 @interface OBTabBarController ()
 
 @property (nonatomic, readonly) NSArray     *viewsArray;
@@ -28,25 +31,25 @@ NSString *const OBTabBarControllerErrorDomain = @"OBTabBarControllerErrorDomain"
     [super viewDidLoad];
     
     // creating VCs for example
-    UIViewController *firstVC = [UIViewController new];
-    UIViewController *secondVC = [UIViewController new];
-    UIViewController *thirdVC = [UIViewController new];
-    UIViewController *fourVC = [UIViewController new];
-    UIViewController *fiveVC = [UIViewController new];
+    UIViewController *firstVC       = [UIViewController new];
+    UIViewController *secondVC      = [UIViewController new];
+    UIViewController *thirdVC       = [UIViewController new];
+    UIViewController *fourVC        = [UIViewController new];
+    UIViewController *fiveVC        = [UIViewController new];
     
-    firstVC.view.backgroundColor = [UIColor greenColor];
-    secondVC.view.backgroundColor = [UIColor yellowColor];
-    thirdVC.view.backgroundColor = [UIColor blueColor];
-    fourVC.view.backgroundColor = [UIColor magentaColor];
-    fiveVC.view.backgroundColor = [UIColor grayColor];
+    firstVC.view.backgroundColor    = [UIColor greenColor];
+    secondVC.view.backgroundColor   = [UIColor yellowColor];
+    thirdVC.view.backgroundColor    = [UIColor blueColor];
+    fourVC.view.backgroundColor     = [UIColor magentaColor];
+    fiveVC.view.backgroundColor     = [UIColor grayColor];
     
     self.viewControllers = [[NSArray alloc]initWithObjects:firstVC, secondVC, thirdVC, fourVC, fiveVC, nil];
     
-    UITabBarItem *tabBarItemOne = [self.tabBar.items objectAtIndex:0];
-    UITabBarItem *tabBarItemTwo = [self.tabBar.items objectAtIndex:1];
-    UITabBarItem *tabBarItemThree = [self.tabBar.items objectAtIndex:2];
-    UITabBarItem *tabBarItemFour = [self.tabBar.items objectAtIndex:3];
-    UITabBarItem *tabBarItemFive = [self.tabBar.items objectAtIndex:4];
+    UITabBarItem *tabBarItemOne     = [self.tabBar.items objectAtIndex:0];
+    UITabBarItem *tabBarItemTwo     = [self.tabBar.items objectAtIndex:1];
+    UITabBarItem *tabBarItemThree   = [self.tabBar.items objectAtIndex:2];
+    UITabBarItem *tabBarItemFour    = [self.tabBar.items objectAtIndex:3];
+    UITabBarItem *tabBarItemFive    = [self.tabBar.items objectAtIndex:4];
     
     tabBarItemOne.title = @"FirstVC";
     tabBarItemTwo.title = @"SecondVC";
@@ -57,7 +60,13 @@ NSString *const OBTabBarControllerErrorDomain = @"OBTabBarControllerErrorDomain"
     // width of one tab bar item
     self.tabBarWidth = self.tabBar.frame.size.width / self.viewControllers.count;
     
-    NSArray *colors = [[NSArray alloc]initWithObjects:[UIColor redColor], [UIColor orangeColor], [UIColor blueColor], [UIColor magentaColor], [UIColor greenColor], nil];
+    UIColor *customRedColor = [UIColor colorWithRed:212.0/255.0 green:108.0/255.0 blue:96.0/255.0 alpha:1.0];
+    UIColor *customYellowColor = [UIColor colorWithRed:243.0/255.0 green:188.0/255.0 blue:123.0/255.0 alpha:1.0];
+    UIColor *customBlueColor = [UIColor colorWithRed:127.0/255.0 green:175.0/255.0 blue:205.0/255.0 alpha:1.0];
+    UIColor *customMagentaColor = [UIColor colorWithRed:211.0/255.0 green:118.0/255.0 blue:153.0/255.0 alpha:1.0];
+    UIColor *customGreenColor = [UIColor colorWithRed:136.0/255.0 green:202.0/255.0 blue:180.0/255.0 alpha:1.0];
+    
+    NSArray *colors = [[NSArray alloc]initWithObjects:customRedColor, customYellowColor, customBlueColor, customMagentaColor, customGreenColor, nil];
     
     NSMutableArray *views = [NSMutableArray new];
     
@@ -65,8 +74,8 @@ NSString *const OBTabBarControllerErrorDomain = @"OBTabBarControllerErrorDomain"
     for (int i = 0; i < self.tabBar.items.count; i++) {
         UIView *view = [[UIView alloc]initWithFrame:CGRectMake(i * (self.tabBar.frame.size.width / (self.tabBar.items.count)), 0.0, 0.0, self.tabBar.frame.size.height)];
         view.backgroundColor = colors[i];
-        view.alpha = 0.4;
-        [self.tabBar addSubview:view];
+        view.alpha = 1.0;
+        [self.tabBar insertSubview:view atIndex:0];
         [views addObject:view];
     }
     
@@ -90,31 +99,30 @@ NSString *const OBTabBarControllerErrorDomain = @"OBTabBarControllerErrorDomain"
 }
 
 - (void)tabBar:(UITabBar *)tabBar didSelectItem:(UITabBarItem *)item {
+    // temporarily disable user interaction
     self.tabBar.userInteractionEnabled = NO;
     [self animateViewToPositionOfItem:item];
 }
 
 - (void)animateViewToPositionOfItem:(UITabBarItem *)item {
-    // getting gap between initial and target tabbaritem
+    // get gap between initial and target tabbaritem
     NSInteger delta = [self.tabBar.items indexOfObject:item] - self.viewPosition;
-    CGFloat totalDuration = 1.0;
     CGFloat disappearanceRate = 0.9;
     NSError *error = [NSError errorWithDomain:OBTabBarControllerErrorDomain code:0 userInfo:nil];
-    [UIView animateKeyframesWithDuration:totalDuration delay:0.0 options:UIViewKeyframeAnimationOptionCalculationModeLinear | UIViewAnimationOptionCurveEaseInOut animations:^{
-        // getting absolute value in order to code right-to-left animations
+    [UIView animateKeyframesWithDuration:animationDuration delay:0.0 options:UIViewKeyframeAnimationOptionCalculationModeLinear | UIViewAnimationOptionCurveEaseInOut animations:^{
+        // get absolute value in order to code right-to-left animations
         NSInteger modulusDelta = labs(delta);
         __block CGFloat relativeStartTimeForAppearingView = 0.0;
-        CGFloat relativeStartTimeForDisappearingView = disappearanceRate * totalDuration;
+        __block CGFloat relativeDuration = (animationDuration / modulusDelta);
+        __block CGFloat relativeDurationForDisappearingView = disappearanceRate * relativeDuration;
+        __block CGFloat relativeStartTimeForDisappearingView = disappearanceRate * animationDuration;
         for (int i = 0; i < modulusDelta; i++) {
-            CGFloat relativeDuration = (totalDuration / modulusDelta);
-            CGFloat relativeDurationForDisappearingView = disappearanceRate * relativeDuration;
             
             // using "child" keyframe animations
             // this part is responsible for disappearance of view
+            NSLog(@"start: %.2f, duration: %.2f", relativeStartTimeForDisappearingView, relativeDurationForDisappearingView);
             [UIView addKeyframeWithRelativeStartTime:relativeStartTimeForDisappearingView relativeDuration:relativeDurationForDisappearingView animations:^{
                 
-                
-//                relativeDurationForDisappearingView += 10;
                 
                 UIView *viewToDisappear = [self.viewsArray objectAtIndex:self.viewPosition];
                 CGRect rectForDisappearingView = viewToDisappear.frame;
@@ -123,13 +131,16 @@ NSString *const OBTabBarControllerErrorDomain = @"OBTabBarControllerErrorDomain"
                 }
                 rectForDisappearingView.size.width = 0.0;
                 viewToDisappear.frame = rectForDisappearingView;
+                relativeStartTimeForDisappearingView += relativeDurationForDisappearingView;
+                
             }];
-            relativeStartTimeForDisappearingView += relativeDuration;
+            
             // part is responsible for appearance of view
             [UIView addKeyframeWithRelativeStartTime:relativeStartTimeForAppearingView relativeDuration:relativeDuration animations:^{
                 
                 UIView *viewToReveal = nil;
                 if (delta > 0) {
+                    // get view which frames should be unwrapped
                     viewToReveal = [self.viewsArray objectAtIndex:self.viewPosition + 1];
                     // for right-to-left transition
                 } else if (delta < 0) {
@@ -147,10 +158,12 @@ NSString *const OBTabBarControllerErrorDomain = @"OBTabBarControllerErrorDomain"
                     self.viewPosition--;
                 }
                 viewToReveal.frame = rectForViewToReveal;
+                relativeStartTimeForAppearingView += relativeDuration;
             }];
-            relativeStartTimeForAppearingView += relativeDuration;
+            
         }
     } completion:^(BOOL finished) {
+        // enable user interaction
         self.tabBar.userInteractionEnabled = YES;
     }];
 }

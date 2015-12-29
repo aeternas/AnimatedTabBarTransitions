@@ -1,21 +1,21 @@
 //
-//  AppDelegate.m
+//  OBAppDelegate.m
 //  AnimatedTabBarTransitions
 //
 //  Created by Ivan Golikov on 26.12.15.
 //  Copyright © 2015 Octoberry. All rights reserved.
 //
 
-#import "AppDelegate.h"
+#import "OBAppDelegate.h"
 #import "OBTabBarController.h"
 
-@interface AppDelegate () <UITabBarControllerDelegate>
+@interface OBAppDelegate () <UITabBarControllerDelegate>
 
 @property (nonatomic, strong) OBTabBarController *tbc;
 
 @end
 
-@implementation AppDelegate
+@implementation OBAppDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     self.window =[[UIWindow alloc]initWithFrame:[UIScreen mainScreen].bounds];
@@ -49,7 +49,7 @@
     CGFloat screenWidth = [UIScreen mainScreen].bounds.size.width;
     toView.frame = CGRectMake((scrollRight ? screenWidth : -screenWidth), viewSize.origin.y, screenWidth, viewSize.size.height);
     
-    [UIView animateWithDuration:0.2
+    [UIView animateWithDuration:animationDuration
                           delay:0
                         options:UIViewAnimationOptionCurveEaseInOut
                      animations:^{

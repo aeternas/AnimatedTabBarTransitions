@@ -1,5 +1,5 @@
 //
-//  AppDelegate.h
+//  OBAppDelegate.h
 //  AnimatedTabBarTransitions
 //
 //  Created by Ivan Golikov on 26.12.15.
@@ -8,7 +8,7 @@
 
 #import <UIKit/UIKit.h>
 
-@interface AppDelegate : UIResponder <UIApplicationDelegate>
+@interface OBAppDelegate : UIResponder <UIApplicationDelegate>
 
 @property (strong, nonatomic) UIWindow *window;
 
