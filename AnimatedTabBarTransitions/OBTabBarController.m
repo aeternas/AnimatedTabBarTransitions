@@ -102,8 +102,56 @@ CGFloat const animationDuration = 1.0;
     // temporarily disable user interaction
     self.tabBar.userInteractionEnabled = NO;
     [self animateViewToPositionOfItem:item];
+    [self animateViewToPositionOfItem:[self.tabBar.items objectAtIndex:[self.tabBar.items indexOfObject:item] - 3]];
 }
 
+- (void)animateViewToPositionOfItem:(UITabBarItem *)item {
+    NSInteger delta = [self.tabBar.items indexOfObject:item] - self.viewPosition;
+    CGFloat disappearanceRate = 0.9;
+    NSError *error = [NSError errorWithDomain:OBTabBarControllerErrorDomain code:0 userInfo:nil];
+    NSInteger modulusDelta = labs(delta);
+    __block CGFloat relativeStartTimeForAppearingView = 0.0;
+    __block CGFloat relativeDuration = (animationDuration / modulusDelta);
+    __block CGFloat relativeDurationForDisappearingView = disappearanceRate * relativeDuration;
+    __block CGFloat relativeStartTimeForDisappearingView = disappearanceRate * animationDuration;
+    
+    for (int i = 0; i < modulusDelta; i++) {
+        
+        
+        [UIView animateKeyframesWithDuration:animationDuration delay:0.0 options:UIViewKeyframeAnimationOptionCalculationModeLinear animations:^{
+            [UIView addKeyframeWithRelativeStartTime:relativeStartTimeForAppearingView relativeDuration:relativeDuration animations:^{
+                
+                UIView *viewToReveal = nil;
+                if (delta > 0) {
+                    // get view which frames should be unwrapped
+                    viewToReveal = [self.viewsArray objectAtIndex:self.viewPosition + 1];
+                    // for right-to-left transition
+                } else if (delta < 0) {
+                    viewToReveal = [self.viewsArray objectAtIndex:self.viewPosition - 1];
+                } else if (delta == 0) {
+                    NSLog(@"No step! Error is: %@", error);
+                }
+                CGRect rectForViewToReveal = viewToReveal.frame;
+                if ([self.tabBar.items indexOfObject:item] > self.viewPosition) {
+                    rectForViewToReveal.size.width = self.tabBarWidth;
+                    self.viewPosition++;
+                } else if ([self.tabBar.items indexOfObject:item] < self.viewPosition) {
+                    // right-to-left transition
+                    rectForViewToReveal.size.width -= self.tabBarWidth;
+                    self.viewPosition--;
+                }
+                viewToReveal.frame = rectForViewToReveal;
+                relativeStartTimeForAppearingView += relativeDuration;
+            }];
+            
+        } completion:^(BOOL finished) {
+            self.tabBar.userInteractionEnabled = YES;
+        }];
+        
+    }
+}
+
+/*
 - (void)animateViewToPositionOfItem:(UITabBarItem *)item {
     // get gap between initial and target tabbaritem
     NSInteger delta = [self.tabBar.items indexOfObject:item] - self.viewPosition;
@@ -167,5 +215,5 @@ CGFloat const animationDuration = 1.0;
         self.tabBar.userInteractionEnabled = YES;
     }];
 }
-
+*/
 @end
