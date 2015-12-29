@@ -31,25 +31,25 @@ CGFloat const animationDuration = 1.0;
     [super viewDidLoad];
     
     // creating VCs for example
-    UIViewController *firstVC = [UIViewController new];
-    UIViewController *secondVC = [UIViewController new];
-    UIViewController *thirdVC = [UIViewController new];
-    UIViewController *fourVC = [UIViewController new];
-    UIViewController *fiveVC = [UIViewController new];
+    UIViewController *firstVC       = [UIViewController new];
+    UIViewController *secondVC      = [UIViewController new];
+    UIViewController *thirdVC       = [UIViewController new];
+    UIViewController *fourVC        = [UIViewController new];
+    UIViewController *fiveVC        = [UIViewController new];
     
-    firstVC.view.backgroundColor = [UIColor greenColor];
-    secondVC.view.backgroundColor = [UIColor yellowColor];
-    thirdVC.view.backgroundColor = [UIColor blueColor];
-    fourVC.view.backgroundColor = [UIColor magentaColor];
-    fiveVC.view.backgroundColor = [UIColor grayColor];
+    firstVC.view.backgroundColor    = [UIColor greenColor];
+    secondVC.view.backgroundColor   = [UIColor yellowColor];
+    thirdVC.view.backgroundColor    = [UIColor blueColor];
+    fourVC.view.backgroundColor     = [UIColor magentaColor];
+    fiveVC.view.backgroundColor     = [UIColor grayColor];
     
     self.viewControllers = [[NSArray alloc]initWithObjects:firstVC, secondVC, thirdVC, fourVC, fiveVC, nil];
     
-    UITabBarItem *tabBarItemOne = [self.tabBar.items objectAtIndex:0];
-    UITabBarItem *tabBarItemTwo = [self.tabBar.items objectAtIndex:1];
-    UITabBarItem *tabBarItemThree = [self.tabBar.items objectAtIndex:2];
-    UITabBarItem *tabBarItemFour = [self.tabBar.items objectAtIndex:3];
-    UITabBarItem *tabBarItemFive = [self.tabBar.items objectAtIndex:4];
+    UITabBarItem *tabBarItemOne     = [self.tabBar.items objectAtIndex:0];
+    UITabBarItem *tabBarItemTwo     = [self.tabBar.items objectAtIndex:1];
+    UITabBarItem *tabBarItemThree   = [self.tabBar.items objectAtIndex:2];
+    UITabBarItem *tabBarItemFour    = [self.tabBar.items objectAtIndex:3];
+    UITabBarItem *tabBarItemFive    = [self.tabBar.items objectAtIndex:4];
     
     tabBarItemOne.title = @"FirstVC";
     tabBarItemTwo.title = @"SecondVC";
@@ -121,7 +121,7 @@ CGFloat const animationDuration = 1.0;
             // using "child" keyframe animations
             // this part is responsible for disappearance of view
             [UIView addKeyframeWithRelativeStartTime:relativeStartTimeForDisappearingView relativeDuration:relativeDurationForDisappearingView animations:^{
-                
+                NSInteger disappearViewPosition = self.viewPosition;
                 //                relativeDurationForDisappearingView += 10;
                 
                 UIView *viewToDisappear = [self.viewsArray objectAtIndex:self.viewPosition];
@@ -160,6 +160,7 @@ CGFloat const animationDuration = 1.0;
             relativeStartTimeForAppearingView += relativeDuration;
         }
     } completion:^(BOOL finished) {
+        // enable user interaction
         self.tabBar.userInteractionEnabled = YES;
     }];
 }
