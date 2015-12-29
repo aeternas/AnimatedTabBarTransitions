@@ -84,7 +84,6 @@ CGFloat const animationDuration = 1.0;
     
     // setting position for initially selected tab bar item
     self.viewPosition = [self.tabBar.items indexOfObject:self.tabBar.selectedItem];
-    self.secondViewPosition = self.viewPosition;
     
     // active view
     _actualView = (UIView *)self.viewsArray[self.viewPosition];
@@ -149,6 +148,7 @@ CGFloat const animationDuration = 1.0;
 
 - (void)animateViewToPositionOfItem:(UITabBarItem *)item {
     NSInteger delta = [self.tabBar.items indexOfObject:item] - self.viewPosition;
+    self.secondViewPosition = self.viewPosition;
     CGFloat disappearanceRate = 0.9;
     NSError *error = [NSError errorWithDomain:OBTabBarControllerErrorDomain code:0 userInfo:nil];
     NSInteger modulusDelta = labs(delta);
