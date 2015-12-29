@@ -49,7 +49,7 @@
     CGFloat screenWidth = [UIScreen mainScreen].bounds.size.width;
     toView.frame = CGRectMake((scrollRight ? screenWidth : -screenWidth), viewSize.origin.y, screenWidth, viewSize.size.height);
     
-    [UIView animateWithDuration:0.2
+    [UIView animateWithDuration:animationDuration
                           delay:0
                         options:UIViewAnimationOptionCurveEaseInOut
                      animations:^{

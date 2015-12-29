@@ -10,6 +10,9 @@
 
 NSString *const OBTabBarControllerErrorDomain = @"OBTabBarControllerErrorDomain";
 
+// globally define animation duration both for VCs and tabBarItems animations
+CGFloat const animationDuration = 1.0;
+
 @interface OBTabBarController ()
 
 @property (nonatomic, readonly) NSArray     *viewsArray;
@@ -104,16 +107,15 @@ NSString *const OBTabBarControllerErrorDomain = @"OBTabBarControllerErrorDomain"
 - (void)animateViewToPositionOfItem:(UITabBarItem *)item {
     // get gap between initial and target tabbaritem
     NSInteger delta = [self.tabBar.items indexOfObject:item] - self.viewPosition;
-    CGFloat totalDuration = 1.0;
     CGFloat disappearanceRate = 0.9;
     NSError *error = [NSError errorWithDomain:OBTabBarControllerErrorDomain code:0 userInfo:nil];
-    [UIView animateKeyframesWithDuration:totalDuration delay:0.0 options:UIViewKeyframeAnimationOptionCalculationModeLinear | UIViewAnimationOptionCurveEaseInOut animations:^{
+    [UIView animateKeyframesWithDuration:animationDuration delay:0.0 options:UIViewKeyframeAnimationOptionCalculationModeLinear | UIViewAnimationOptionCurveEaseInOut animations:^{
         // get absolute value in order to code right-to-left animations
         NSInteger modulusDelta = labs(delta);
         __block CGFloat relativeStartTimeForAppearingView = 0.0;
-        CGFloat relativeStartTimeForDisappearingView = disappearanceRate * totalDuration;
+        CGFloat relativeStartTimeForDisappearingView = disappearanceRate * animationDuration;
         for (int i = 0; i < modulusDelta; i++) {
-            CGFloat relativeDuration = (totalDuration / modulusDelta);
+            CGFloat relativeDuration = (animationDuration / modulusDelta);
             CGFloat relativeDurationForDisappearingView = disappearanceRate * relativeDuration;
             
             // using "child" keyframe animations
