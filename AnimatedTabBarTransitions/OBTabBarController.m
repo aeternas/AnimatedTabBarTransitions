@@ -56,8 +56,14 @@ NSString *const OBTabBarControllerErrorDomain = @"OBTabBarControllerErrorDomain"
     
     // width of one tab bar item
     self.tabBarWidth = self.tabBar.frame.size.width / self.viewControllers.count;
+
+    UIColor *customRedColor = [UIColor colorWithRed:212.0/255.0 green:108.0/255.0 blue:96.0/255.0 alpha:1.0];
+    UIColor *customYellowColor = [UIColor colorWithRed:243.0/255.0 green:188.0/255.0 blue:123.0/255.0 alpha:1.0];
+    UIColor *customBlueColor = [UIColor colorWithRed:127.0/255.0 green:175.0/255.0 blue:205.0/255.0 alpha:1.0];
+    UIColor *customMagentaColor = [UIColor colorWithRed:211.0/255.0 green:118.0/255.0 blue:153.0/255.0 alpha:1.0];
+    UIColor *customGreenColor = [UIColor colorWithRed:136.0/255.0 green:202.0/255.0 blue:180.0/255.0 alpha:1.0];
     
-    NSArray *colors = [[NSArray alloc]initWithObjects:[UIColor redColor], [UIColor orangeColor], [UIColor blueColor], [UIColor magentaColor], [UIColor greenColor], nil];
+    NSArray *colors = [[NSArray alloc]initWithObjects:customRedColor, customYellowColor, customBlueColor, customMagentaColor, customGreenColor, nil];
     
     NSMutableArray *views = [NSMutableArray new];
     
@@ -65,8 +71,8 @@ NSString *const OBTabBarControllerErrorDomain = @"OBTabBarControllerErrorDomain"
     for (int i = 0; i < self.tabBar.items.count; i++) {
         UIView *view = [[UIView alloc]initWithFrame:CGRectMake(i * (self.tabBar.frame.size.width / (self.tabBar.items.count)), 0.0, 0.0, self.tabBar.frame.size.height)];
         view.backgroundColor = colors[i];
-        view.alpha = 0.4;
-        [self.tabBar addSubview:view];
+        view.alpha = 1.0;
+        [self.tabBar insertSubview:view atIndex:0];
         [views addObject:view];
     }
     
@@ -112,7 +118,6 @@ NSString *const OBTabBarControllerErrorDomain = @"OBTabBarControllerErrorDomain"
             // using "child" keyframe animations
             // this part is responsible for disappearance of view
             [UIView addKeyframeWithRelativeStartTime:relativeStartTimeForDisappearingView relativeDuration:relativeDurationForDisappearingView animations:^{
-                
                 
 //                relativeDurationForDisappearingView += 10;
                 
