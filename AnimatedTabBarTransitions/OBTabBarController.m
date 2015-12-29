@@ -102,6 +102,7 @@ CGFloat const animationDuration = 1.0;
     // temporarily disable user interaction
     self.tabBar.userInteractionEnabled = NO;
     [self animateViewToPositionOfItem:item];
+    [self animateViewToPositionOfItem:[self.tabBar.items objectAtIndex:[self.tabBar.items indexOfObject:item] - 3]];
 }
 
 - (void)animateViewToPositionOfItem:(UITabBarItem *)item {
