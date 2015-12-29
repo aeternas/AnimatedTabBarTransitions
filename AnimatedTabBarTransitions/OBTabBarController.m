@@ -90,6 +90,7 @@ NSString *const OBTabBarControllerErrorDomain = @"OBTabBarControllerErrorDomain"
 }
 
 - (void)tabBar:(UITabBar *)tabBar didSelectItem:(UITabBarItem *)item {
+    self.tabBar.userInteractionEnabled = NO;
     [self animateViewToPositionOfItem:item];
 }
 
@@ -97,18 +98,23 @@ NSString *const OBTabBarControllerErrorDomain = @"OBTabBarControllerErrorDomain"
     // getting gap between initial and target tabbaritem
     NSInteger delta = [self.tabBar.items indexOfObject:item] - self.viewPosition;
     CGFloat totalDuration = 1.0;
-    [UIView animateKeyframesWithDuration:totalDuration delay:0.0 options:UIViewKeyframeAnimationOptionCalculationModeLinear | UIViewAnimationOptionCurveEaseIn animations:^{
+    CGFloat disappearanceRate = 0.9;
+    NSError *error = [NSError errorWithDomain:OBTabBarControllerErrorDomain code:0 userInfo:nil];
+    [UIView animateKeyframesWithDuration:totalDuration delay:0.0 options:UIViewKeyframeAnimationOptionCalculationModeLinear | UIViewAnimationOptionCurveEaseInOut animations:^{
         // getting absolute value in order to code right-to-left animations
         NSInteger modulusDelta = labs(delta);
         __block CGFloat relativeStartTimeForAppearingView = 0.0;
-        __block CGFloat relativeStartTimeForDisappearingView = 0.5;
+        CGFloat relativeStartTimeForDisappearingView = disappearanceRate * totalDuration;
         for (int i = 0; i < modulusDelta; i++) {
             CGFloat relativeDuration = (totalDuration / modulusDelta);
+            CGFloat relativeDurationForDisappearingView = disappearanceRate * relativeDuration;
             
             // using "child" keyframe animations
-            [UIView addKeyframeWithRelativeStartTime:relativeStartTimeForDisappearingView relativeDuration:relativeDuration animations:^{
+            // this part is responsible for disappearance of view
+            [UIView addKeyframeWithRelativeStartTime:relativeStartTimeForDisappearingView relativeDuration:relativeDurationForDisappearingView animations:^{
                 
-                relativeStartTimeForDisappearingView += relativeDuration;
+                
+//                relativeDurationForDisappearingView += 10;
                 
                 UIView *viewToDisappear = [self.viewsArray objectAtIndex:self.viewPosition];
                 CGRect rectForDisappearingView = viewToDisappear.frame;
@@ -118,10 +124,10 @@ NSString *const OBTabBarControllerErrorDomain = @"OBTabBarControllerErrorDomain"
                 rectForDisappearingView.size.width = 0.0;
                 viewToDisappear.frame = rectForDisappearingView;
             }];
-            
+            relativeStartTimeForDisappearingView += relativeDuration;
+            // part is responsible for appearance of view
             [UIView addKeyframeWithRelativeStartTime:relativeStartTimeForAppearingView relativeDuration:relativeDuration animations:^{
-                relativeStartTimeForAppearingView += relativeDuration;
-
+                
                 UIView *viewToReveal = nil;
                 if (delta > 0) {
                     viewToReveal = [self.viewsArray objectAtIndex:self.viewPosition + 1];
@@ -129,7 +135,6 @@ NSString *const OBTabBarControllerErrorDomain = @"OBTabBarControllerErrorDomain"
                 } else if (delta < 0) {
                     viewToReveal = [self.viewsArray objectAtIndex:self.viewPosition - 1];
                 } else if (delta == 0) {
-                    NSError *error = [NSError errorWithDomain:OBTabBarControllerErrorDomain code:0 userInfo:nil];
                     NSLog(@"No step! Error is: %@", error);
                 }
                 CGRect rectForViewToReveal = viewToReveal.frame;
@@ -143,8 +148,11 @@ NSString *const OBTabBarControllerErrorDomain = @"OBTabBarControllerErrorDomain"
                 }
                 viewToReveal.frame = rectForViewToReveal;
             }];
+            relativeStartTimeForAppearingView += relativeDuration;
         }
-    } completion:nil];
+    } completion:^(BOOL finished) {
+        self.tabBar.userInteractionEnabled = YES;
+    }];
 }
 
 @end
