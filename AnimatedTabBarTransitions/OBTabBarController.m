@@ -97,15 +97,19 @@ NSString *const OBTabBarControllerErrorDomain = @"OBTabBarControllerErrorDomain"
     // getting gap between initial and target tabbaritem
     NSInteger delta = [self.tabBar.items indexOfObject:item] - self.viewPosition;
     CGFloat totalDuration = 1.0;
-    [UIView animateKeyframesWithDuration:totalDuration delay:0.0 options:UIViewKeyframeAnimationOptionCalculationModeLinear animations:^{
+    [UIView animateKeyframesWithDuration:totalDuration delay:0.0 options:UIViewKeyframeAnimationOptionCalculationModeLinear | UIViewAnimationOptionCurveEaseIn animations:^{
         // getting absolute value in order to code right-to-left animations
         NSInteger modulusDelta = labs(delta);
-        __block CGFloat relativeStartTime = 0.0;
+        __block CGFloat relativeStartTimeForAppearingView = 0.0;
+        __block CGFloat relativeStartTimeForDisappearingView = 0.5;
         for (int i = 0; i < modulusDelta; i++) {
             CGFloat relativeDuration = (totalDuration / modulusDelta);
+            
             // using "child" keyframe animations
-            [UIView addKeyframeWithRelativeStartTime:relativeStartTime relativeDuration:relativeDuration animations:^{
-                relativeStartTime += relativeDuration;
+            [UIView addKeyframeWithRelativeStartTime:relativeStartTimeForDisappearingView relativeDuration:relativeDuration animations:^{
+                
+                relativeStartTimeForDisappearingView += relativeDuration;
+                
                 UIView *viewToDisappear = [self.viewsArray objectAtIndex:self.viewPosition];
                 CGRect rectForDisappearingView = viewToDisappear.frame;
                 if ([self.tabBar.items indexOfObject:item] > self.viewPosition) {
@@ -113,6 +117,11 @@ NSString *const OBTabBarControllerErrorDomain = @"OBTabBarControllerErrorDomain"
                 }
                 rectForDisappearingView.size.width = 0.0;
                 viewToDisappear.frame = rectForDisappearingView;
+            }];
+            
+            [UIView addKeyframeWithRelativeStartTime:relativeStartTimeForAppearingView relativeDuration:relativeDuration animations:^{
+                relativeStartTimeForAppearingView += relativeDuration;
+
                 UIView *viewToReveal = nil;
                 if (delta > 0) {
                     viewToReveal = [self.viewsArray objectAtIndex:self.viewPosition + 1];
