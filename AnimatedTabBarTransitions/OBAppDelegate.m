@@ -1,21 +1,21 @@
 //
-//  AppDelegate.m
+//  OBAppDelegate.m
 //  AnimatedTabBarTransitions
 //
 //  Created by Ivan Golikov on 26.12.15.
 //  Copyright © 2015 Octoberry. All rights reserved.
 //
 
-#import "AppDelegate.h"
+#import "OBAppDelegate.h"
 #import "OBTabBarController.h"
 
-@interface AppDelegate () <UITabBarControllerDelegate>
+@interface OBAppDelegate () <UITabBarControllerDelegate>
 
 @property (nonatomic, strong) OBTabBarController *tbc;
 
 @end
 
-@implementation AppDelegate
+@implementation OBAppDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     self.window =[[UIWindow alloc]initWithFrame:[UIScreen mainScreen].bounds];

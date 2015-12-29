@@ -56,7 +56,7 @@ NSString *const OBTabBarControllerErrorDomain = @"OBTabBarControllerErrorDomain"
     
     // width of one tab bar item
     self.tabBarWidth = self.tabBar.frame.size.width / self.viewControllers.count;
-
+    
     UIColor *customRedColor = [UIColor colorWithRed:212.0/255.0 green:108.0/255.0 blue:96.0/255.0 alpha:1.0];
     UIColor *customYellowColor = [UIColor colorWithRed:243.0/255.0 green:188.0/255.0 blue:123.0/255.0 alpha:1.0];
     UIColor *customBlueColor = [UIColor colorWithRed:127.0/255.0 green:175.0/255.0 blue:205.0/255.0 alpha:1.0];
@@ -96,18 +96,19 @@ NSString *const OBTabBarControllerErrorDomain = @"OBTabBarControllerErrorDomain"
 }
 
 - (void)tabBar:(UITabBar *)tabBar didSelectItem:(UITabBarItem *)item {
+    // temporarily disable user interaction
     self.tabBar.userInteractionEnabled = NO;
     [self animateViewToPositionOfItem:item];
 }
 
 - (void)animateViewToPositionOfItem:(UITabBarItem *)item {
-    // getting gap between initial and target tabbaritem
+    // get gap between initial and target tabbaritem
     NSInteger delta = [self.tabBar.items indexOfObject:item] - self.viewPosition;
     CGFloat totalDuration = 1.0;
     CGFloat disappearanceRate = 0.9;
     NSError *error = [NSError errorWithDomain:OBTabBarControllerErrorDomain code:0 userInfo:nil];
     [UIView animateKeyframesWithDuration:totalDuration delay:0.0 options:UIViewKeyframeAnimationOptionCalculationModeLinear | UIViewAnimationOptionCurveEaseInOut animations:^{
-        // getting absolute value in order to code right-to-left animations
+        // get absolute value in order to code right-to-left animations
         NSInteger modulusDelta = labs(delta);
         __block CGFloat relativeStartTimeForAppearingView = 0.0;
         CGFloat relativeStartTimeForDisappearingView = disappearanceRate * totalDuration;
@@ -119,7 +120,7 @@ NSString *const OBTabBarControllerErrorDomain = @"OBTabBarControllerErrorDomain"
             // this part is responsible for disappearance of view
             [UIView addKeyframeWithRelativeStartTime:relativeStartTimeForDisappearingView relativeDuration:relativeDurationForDisappearingView animations:^{
                 
-//                relativeDurationForDisappearingView += 10;
+                //                relativeDurationForDisappearingView += 10;
                 
                 UIView *viewToDisappear = [self.viewsArray objectAtIndex:self.viewPosition];
                 CGRect rectForDisappearingView = viewToDisappear.frame;
@@ -135,6 +136,7 @@ NSString *const OBTabBarControllerErrorDomain = @"OBTabBarControllerErrorDomain"
                 
                 UIView *viewToReveal = nil;
                 if (delta > 0) {
+                    // get view which frames should be unwrapped
                     viewToReveal = [self.viewsArray objectAtIndex:self.viewPosition + 1];
                     // for right-to-left transition
                 } else if (delta < 0) {
