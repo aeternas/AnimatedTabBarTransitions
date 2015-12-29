@@ -102,7 +102,7 @@ CGFloat const animationDuration = 1.0;
     // temporarily disable user interaction
     self.tabBar.userInteractionEnabled = NO;
     [self animateViewToPositionOfItem:item];
-    [self animateViewToPositionOfItem:[self.tabBar.items objectAtIndex:[self.tabBar.items indexOfObject:item] - 3]];
+//    [self animateViewToPositionOfItem:[self.tabBar.items objectAtIndex:[self.tabBar.items indexOfObject:item] - 3]];
 }
 
 - (void)animateViewToPositionOfItem:(UITabBarItem *)item {
@@ -115,9 +115,10 @@ CGFloat const animationDuration = 1.0;
     __block CGFloat relativeDurationForDisappearingView = disappearanceRate * relativeDuration;
     __block CGFloat relativeStartTimeForDisappearingView = disappearanceRate * animationDuration;
     
-    for (int i = 0; i < modulusDelta; i++) {
+    
         
         [UIView animateKeyframesWithDuration:animationDuration delay:0.0 options:UIViewKeyframeAnimationOptionCalculationModeLinear animations:^{
+            for (int i = 0; i < modulusDelta; i++) {
             [UIView addKeyframeWithRelativeStartTime:relativeStartTimeForAppearingView relativeDuration:relativeDuration animations:^{
                 
                 UIView *viewToReveal = nil;
@@ -142,12 +143,12 @@ CGFloat const animationDuration = 1.0;
                 viewToReveal.frame = rectForViewToReveal;
                 relativeStartTimeForAppearingView += relativeDuration;
             }];
-            
+            }
         } completion:^(BOOL finished) {
             self.tabBar.userInteractionEnabled = YES;
         }];
         
-    }
+    
     
 }
 
