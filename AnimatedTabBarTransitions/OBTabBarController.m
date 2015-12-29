@@ -117,7 +117,6 @@ CGFloat const animationDuration = 1.0;
     
     for (int i = 0; i < modulusDelta; i++) {
         
-        
         [UIView animateKeyframesWithDuration:animationDuration delay:0.0 options:UIViewKeyframeAnimationOptionCalculationModeLinear animations:^{
             [UIView addKeyframeWithRelativeStartTime:relativeStartTimeForAppearingView relativeDuration:relativeDuration animations:^{
                 
@@ -149,71 +148,7 @@ CGFloat const animationDuration = 1.0;
         }];
         
     }
+    
 }
 
-/*
-- (void)animateViewToPositionOfItem:(UITabBarItem *)item {
-    // get gap between initial and target tabbaritem
-    NSInteger delta = [self.tabBar.items indexOfObject:item] - self.viewPosition;
-    CGFloat disappearanceRate = 0.9;
-    NSError *error = [NSError errorWithDomain:OBTabBarControllerErrorDomain code:0 userInfo:nil];
-    [UIView animateKeyframesWithDuration:animationDuration delay:0.0 options:UIViewKeyframeAnimationOptionCalculationModeLinear | UIViewAnimationOptionCurveEaseInOut animations:^{
-        // get absolute value in order to code right-to-left animations
-        NSInteger modulusDelta = labs(delta);
-        __block CGFloat relativeStartTimeForAppearingView = 0.0;
-        __block CGFloat relativeDuration = (animationDuration / modulusDelta);
-        __block CGFloat relativeDurationForDisappearingView = disappearanceRate * relativeDuration;
-        __block CGFloat relativeStartTimeForDisappearingView = disappearanceRate * animationDuration;
-        for (int i = 0; i < modulusDelta; i++) {
-            
-            // using "child" keyframe animations
-            // this part is responsible for disappearance of view
-            NSLog(@"start: %.2f, duration: %.2f", relativeStartTimeForDisappearingView, relativeDurationForDisappearingView);
-            [UIView addKeyframeWithRelativeStartTime:relativeStartTimeForDisappearingView relativeDuration:relativeDurationForDisappearingView animations:^{
-                
-                
-                UIView *viewToDisappear = [self.viewsArray objectAtIndex:self.viewPosition];
-                CGRect rectForDisappearingView = viewToDisappear.frame;
-                if ([self.tabBar.items indexOfObject:item] > self.viewPosition) {
-                    rectForDisappearingView.origin.x = ((UIView *)[self.viewsArray objectAtIndex:self.viewPosition + 1]).frame.origin.x;
-                }
-                rectForDisappearingView.size.width = 0.0;
-                viewToDisappear.frame = rectForDisappearingView;
-                relativeStartTimeForDisappearingView += relativeDurationForDisappearingView;
-                
-            }];
-            
-            // part is responsible for appearance of view
-            [UIView addKeyframeWithRelativeStartTime:relativeStartTimeForAppearingView relativeDuration:relativeDuration animations:^{
-                
-                UIView *viewToReveal = nil;
-                if (delta > 0) {
-                    // get view which frames should be unwrapped
-                    viewToReveal = [self.viewsArray objectAtIndex:self.viewPosition + 1];
-                    // for right-to-left transition
-                } else if (delta < 0) {
-                    viewToReveal = [self.viewsArray objectAtIndex:self.viewPosition - 1];
-                } else if (delta == 0) {
-                    NSLog(@"No step! Error is: %@", error);
-                }
-                CGRect rectForViewToReveal = viewToReveal.frame;
-                if ([self.tabBar.items indexOfObject:item] > self.viewPosition) {
-                    rectForViewToReveal.size.width = self.tabBarWidth;
-                    self.viewPosition++;
-                } else if ([self.tabBar.items indexOfObject:item] < self.viewPosition) {
-                    // right-to-left transition
-                    rectForViewToReveal.size.width -= self.tabBarWidth;
-                    self.viewPosition--;
-                }
-                viewToReveal.frame = rectForViewToReveal;
-                relativeStartTimeForAppearingView += relativeDuration;
-            }];
-            
-        }
-    } completion:^(BOOL finished) {
-        // enable user interaction
-        self.tabBar.userInteractionEnabled = YES;
-    }];
-}
-*/
 @end
