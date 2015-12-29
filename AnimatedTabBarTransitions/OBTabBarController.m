@@ -113,16 +113,16 @@ CGFloat const animationDuration = 1.0;
         // get absolute value in order to code right-to-left animations
         NSInteger modulusDelta = labs(delta);
         __block CGFloat relativeStartTimeForAppearingView = 0.0;
-        CGFloat relativeStartTimeForDisappearingView = disappearanceRate * animationDuration;
+        __block CGFloat relativeDuration = (animationDuration / modulusDelta);
+        __block CGFloat relativeDurationForDisappearingView = disappearanceRate * relativeDuration;
+        __block CGFloat relativeStartTimeForDisappearingView = disappearanceRate * animationDuration;
         for (int i = 0; i < modulusDelta; i++) {
-            CGFloat relativeDuration = (animationDuration / modulusDelta);
-            CGFloat relativeDurationForDisappearingView = disappearanceRate * relativeDuration;
             
             // using "child" keyframe animations
             // this part is responsible for disappearance of view
+            NSLog(@"start: %.2f, duration: %.2f", relativeStartTimeForDisappearingView, relativeDurationForDisappearingView);
             [UIView addKeyframeWithRelativeStartTime:relativeStartTimeForDisappearingView relativeDuration:relativeDurationForDisappearingView animations:^{
-                NSInteger disappearViewPosition = self.viewPosition;
-                //                relativeDurationForDisappearingView += 10;
+                
                 
                 UIView *viewToDisappear = [self.viewsArray objectAtIndex:self.viewPosition];
                 CGRect rectForDisappearingView = viewToDisappear.frame;
@@ -131,8 +131,10 @@ CGFloat const animationDuration = 1.0;
                 }
                 rectForDisappearingView.size.width = 0.0;
                 viewToDisappear.frame = rectForDisappearingView;
+                relativeStartTimeForDisappearingView += relativeDurationForDisappearingView;
+                
             }];
-            relativeStartTimeForDisappearingView += relativeDuration;
+            
             // part is responsible for appearance of view
             [UIView addKeyframeWithRelativeStartTime:relativeStartTimeForAppearingView relativeDuration:relativeDuration animations:^{
                 
@@ -156,8 +158,9 @@ CGFloat const animationDuration = 1.0;
                     self.viewPosition--;
                 }
                 viewToReveal.frame = rectForViewToReveal;
+                relativeStartTimeForAppearingView += relativeDuration;
             }];
-            relativeStartTimeForAppearingView += relativeDuration;
+            
         }
     } completion:^(BOOL finished) {
         // enable user interaction
