@@ -197,6 +197,14 @@ CGFloat const animationDuration = 1.0;
 //        [self foldBackAllViewsButItem:item];
         [self foldBackAllViewsButItemForLeft:item];
         for (UIView *view in self.viewsArray) {
+            if ([self.viewsArray indexOfObject:view] > [self.tabBar.items indexOfObject:item]) {
+                CGRect viewRect = view.frame;
+                viewRect.origin.x = ([self.viewsArray indexOfObject:view] * self.tabBarWidth);
+                viewRect.size.width = 0.0;
+                view.frame = viewRect;
+            }
+        }
+        for (UIView *view in self.viewsArray) {
             NSLog(@"origin of leftview is %.2f", view.frame.origin.x);
         }
     }];
