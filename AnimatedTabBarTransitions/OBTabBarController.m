@@ -107,13 +107,23 @@ CGFloat const animationDuration = 1.0;
     [self animateViewToPositionOfItem:item];
 }
 
+- (void)foldBackAllViewsButItemForLeft:(UITabBarItem *)item {
+    for (UIView *view in self.viewsArray) {
+//        if ([self.viewsArray indexOfObject:view] != [self.tabBar.items indexOfObject:item]) {
+            CGRect viewRect = view.frame;
+            viewRect.origin.x = ([self.tabBar.items indexOfObject:item] * self.tabBarWidth);
+            view.frame = viewRect;
+//        }
+    }
+}
+
 - (void)foldBackAllViewsButItem:(UITabBarItem *)item {
     for (UIView *view in self.viewsArray) {
-        if ([self.viewsArray indexOfObject:view] != [self.tabBar.items indexOfObject:item]) {
+//        if ([self.viewsArray indexOfObject:view] != [self.tabBar.items indexOfObject:item]) {
             CGRect viewRect = view.frame;
-            viewRect.origin.x = ((UIView *)[self.tabBar.subviews objectAtIndex:[self.viewsArray indexOfObject:view]]).frame.origin.x;
+            viewRect.origin.x = ([self.viewsArray indexOfObject:view] * self.tabBarWidth);
             view.frame = viewRect;
-        }
+//        }
     }
 }
 
@@ -148,7 +158,10 @@ CGFloat const animationDuration = 1.0;
         }
         
     } completion:^(BOOL finished) {
-        [self foldBackAllViewsButItem:item];
+//        [self foldBackAllViewsButItem:item];
+        for (UIView *view in self.viewsArray) {
+            NSLog(@"origin of right view is %.2f", view.frame.origin.x);
+        }
     }];
 }
 
@@ -181,7 +194,11 @@ CGFloat const animationDuration = 1.0;
         }
         
     } completion:^(BOOL finished) {
-        [self foldBackAllViewsButItem:item];
+//        [self foldBackAllViewsButItem:item];
+        [self foldBackAllViewsButItemForLeft:item];
+        for (UIView *view in self.viewsArray) {
+            NSLog(@"origin of leftview is %.2f", view.frame.origin.x);
+        }
     }];
 }
 
@@ -214,7 +231,6 @@ CGFloat const animationDuration = 1.0;
                     rectForViewToReveal.origin.x = ((UIView *)[self.viewsArray objectAtIndex:self.viewPosition]).frame.origin.x;
                     
                     rectForViewToReveal.size.width -= self.tabBarWidth;
-                    
                     
                     self.viewPosition--;
                 }
