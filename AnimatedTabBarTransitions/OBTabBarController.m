@@ -159,9 +159,11 @@ CGFloat const animationDuration = 1.0;
         
     } completion:^(BOOL finished) {
 //        [self foldBackAllViewsButItem:item];
+        /*
         for (UIView *view in self.viewsArray) {
             NSLog(@"origin of right view is %.2f", view.frame.origin.x);
         }
+         */
     }];
 }
 
@@ -204,9 +206,11 @@ CGFloat const animationDuration = 1.0;
                 view.frame = viewRect;
             }
         }
+        /*
         for (UIView *view in self.viewsArray) {
             NSLog(@"origin of leftview is %.2f", view.frame.origin.x);
         }
+         */
     }];
 }
 
@@ -236,7 +240,17 @@ CGFloat const animationDuration = 1.0;
                     self.viewPosition++;
                 } else if ([self.tabBar.items indexOfObject:item] < self.viewPosition) {
                     
-                    rectForViewToReveal.origin.x = ((UIView *)[self.viewsArray objectAtIndex:self.viewPosition]).frame.origin.x;
+                    for (UIView *view in self.viewsArray) {
+                        NSLog(@"Viewposition is %li", (long)self.viewPosition);
+                        if ([self.viewsArray indexOfObject:view] < self.viewPosition) {
+                            CGRect viewRect = view.frame;
+                            viewRect.origin.x = [self.viewsArray indexOfObject:view] * self.tabBarWidth;
+                            view.frame = viewRect;
+                        }
+                        
+                    }
+//                    
+//                    rectForViewToReveal.origin.x = ((UIView *)[self.viewsArray objectAtIndex:self.viewPosition]).frame.origin.x;
                     
                     rectForViewToReveal.size.width -= self.tabBarWidth;
                     
