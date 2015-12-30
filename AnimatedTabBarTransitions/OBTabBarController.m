@@ -21,6 +21,7 @@ CGFloat const animationDuration = 1.0;
 
 @property (nonatomic, assign) NSInteger     viewPosition;
 @property (nonatomic, assign) NSInteger     secondViewPosition;
+@property (nonatomic, assign) NSInteger     thirdViewPosition;
 
 @property (nonatomic, assign) CGFloat       tabBarWidth;
 
@@ -112,7 +113,7 @@ CGFloat const animationDuration = 1.0;
     NSInteger delta = self.secondViewPosition - [self.tabBar.items indexOfObject:item];
     
 //    NSInteger delta = -2;
-    CGFloat disappearanceRate = 0.8;
+    CGFloat disappearanceRate = 0.35;
     NSError *error = [NSError errorWithDomain:OBTabBarControllerErrorDomain code:0 userInfo:nil];
     NSInteger modulusDelta = labs(delta);
     __block CGFloat relativeStartTimeForAppearingView = 0.0;
@@ -144,18 +145,60 @@ CGFloat const animationDuration = 1.0;
             
         }
         
-    } completion:nil];
+    } completion:^(BOOL finished) {
+//        self.secondViewPosition = [self.tabBar.items indexOfObject:self.tabBar.selectedItem];
+    }];
 }
 
-- (void)animateViewToPositionOfItem:(UITabBarItem *)item {
-    NSInteger delta = [self.tabBar.items indexOfObject:item] - self.viewPosition;
-    CGFloat disappearanceRate = 0.9;
+
+
+- (void)animateDisappearanceToLeft:(UITabBarItem *)item {
+    
+    NSInteger delta = self.thirdViewPosition - [self.tabBar.items indexOfObject:item];
+    NSLog(@"sec view pos is %li, view pos is %li, delta is %li", self.secondViewPosition, self.viewPosition, (long)delta);
+    //    NSInteger delta = -2;
+    CGFloat disappearanceRate = 0.35;
     NSError *error = [NSError errorWithDomain:OBTabBarControllerErrorDomain code:0 userInfo:nil];
     NSInteger modulusDelta = labs(delta);
     __block CGFloat relativeStartTimeForAppearingView = 0.0;
     __block CGFloat relativeDuration = (animationDuration / modulusDelta);
     __block CGFloat relativeDurationForDisappearingView = disappearanceRate * relativeDuration;
     __block CGFloat relativeStartTimeForDisappearingView = disappearanceRate * animationDuration;
+    [UIView animateKeyframesWithDuration:relativeStartTimeForDisappearingView delay:0.0 options:UIViewKeyframeAnimationOptionCalculationModeLinear animations:^{
+        __block NSInteger position = 0;
+        for (int i = 0; i < modulusDelta; i++) {
+            
+            [UIView addKeyframeWithRelativeStartTime:relativeStartTimeForAppearingView relativeDuration:relativeDuration / modulusDelta animations:^{
+                
+                UIView *viewToReveal = nil;
+                viewToReveal = [self.viewsArray objectAtIndex:self.thirdViewPosition - 0];
+                CGRect rectForViewToReveal = viewToReveal.frame;
+                //                rectForViewToReveal.origin.x -= rectForViewToReveal.size.width;
+                
+                //                rectForViewToReveal.size.width -= self.tabBarWidth;
+//                rectForViewToReveal.origin.x = ((UIView *)[self.viewsArray objectAtIndex:self.viewPosition]).frame.origin.x;
+//                rectForViewToReveal.size.width -= self.tabBarWidth;
+                rectForViewToReveal.size.width = 0.0;
+                // !!
+                
+                viewToReveal.frame = rectForViewToReveal;
+                                relativeStartTimeForAppearingView += relativeDuration;
+                //                --self.viewPosition;
+                --self.thirdViewPosition;
+            }];
+            
+        }
+        
+    } completion:nil];
+}
+
+
+- (void)animateViewToPositionOfItem:(UITabBarItem *)item {
+    NSInteger delta = [self.tabBar.items indexOfObject:item] - self.viewPosition;
+    NSError *error = [NSError errorWithDomain:OBTabBarControllerErrorDomain code:0 userInfo:nil];
+    NSInteger modulusDelta = labs(delta);
+    __block CGFloat relativeStartTimeForAppearingView = 0.0;
+    __block CGFloat relativeDuration = (animationDuration / modulusDelta);
     
     [UIView animateKeyframesWithDuration:animationDuration delay:0.0 options:UIViewKeyframeAnimationOptionCalculationModeLinear | UIViewAnimationCurveEaseInOut animations:^{
         for (int i = 0; i < modulusDelta; i++) {
@@ -187,12 +230,13 @@ CGFloat const animationDuration = 1.0;
     } completion:^(BOOL finished) {
         if (delta > 0) {
             [self animateDisappearance:item];
+        } else {
+            self.thirdViewPosition = [self.tabBar.items indexOfObject:self.tabBar.selectedItem];
+            [self animateDisappearanceToLeft:item];
         }
+        
         self.tabBar.userInteractionEnabled = YES;
     }];
-    
-    
-    
 }
 
 @end
