@@ -139,9 +139,9 @@ CGFloat const animationDuration = 1.0;
                 rectForViewToReveal.size.width = 0.0;
                 
                 viewToReveal.frame = rectForViewToReveal;
-                if (delta > 0) {
-                    relativeStartTimeForAppearingView += relativeDuration;
-                }
+                
+                relativeStartTimeForAppearingView = delta > 0 ? relativeStartTimeForAppearingView + relativeDuration : relativeStartTimeForAppearingView;
+                
                 self.supplementaryViewPositionIndex = delta < 0 ? self.supplementaryViewPositionIndex + 1 : self.supplementaryViewPositionIndex - 1;
             }];
         }
