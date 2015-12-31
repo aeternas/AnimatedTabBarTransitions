@@ -139,7 +139,9 @@ CGFloat const animationDuration = 1.0;
                 rectForViewToReveal.size.width = 0.0;
                 
                 viewToReveal.frame = rectForViewToReveal;
-                
+                if (delta > 0) {
+                    relativeStartTimeForAppearingView += relativeDuration;
+                }
                 self.supplementaryViewPositionIndex = delta < 0 ? self.supplementaryViewPositionIndex + 1 : self.supplementaryViewPositionIndex - 1;
             }];
         }
@@ -159,7 +161,6 @@ CGFloat const animationDuration = 1.0;
     // prep work for left-directed animation
     if (delta < 0) {
         for (UIView *view in self.viewsArray) {
-            NSLog(@"viewPositionIndex is %li", (long)self.viewPositionIndex);
             if ([self.viewsArray indexOfObject:view] !=  self.viewPositionIndex) {
                 CGRect viewRect = view.frame;
                 viewRect.origin.x = ([self.viewsArray indexOfObject:view] + 1)  * self.tabBarWidth;
