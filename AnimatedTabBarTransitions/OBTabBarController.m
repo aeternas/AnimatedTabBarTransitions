@@ -136,6 +136,7 @@ CGFloat const animationDuration = 1.0;
                 if (delta < 0) {
                     rectForViewToReveal.origin.x = ((UIView *)[self.viewsArray objectAtIndex:self.viewPositionIndex]).frame.origin.x;
                 }
+                
                 rectForViewToReveal.size.width = 0.0;
                 
                 viewToReveal.frame = rectForViewToReveal;
@@ -168,6 +169,7 @@ CGFloat const animationDuration = 1.0;
             }
         }
     }
+    
     [UIView animateKeyframesWithDuration:animationDuration delay:0.0 options:UIViewKeyframeAnimationOptionCalculationModeLinear | UIViewAnimationCurveEaseInOut animations:^{
         for (int i = 0; i < modulusDelta; i++) {
             [UIView addKeyframeWithRelativeStartTime:relativeStartTimeForAppearingView relativeDuration:relativeDuration animations:^{
