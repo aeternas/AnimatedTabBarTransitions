@@ -97,7 +97,7 @@ CGFloat const animationDuration = 1.0;
     CGRect viewRect = self.actualView.frame;
     viewRect.size.width = self.tabBarWidth;
     self.actualView.frame = viewRect;
-
+    
 }
 
 - (void)tabBar:(UITabBar *)tabBar didSelectItem:(UITabBarItem *)item {
@@ -113,7 +113,6 @@ CGFloat const animationDuration = 1.0;
         view.frame = viewRect;
     }
 }
-
 - (void)animateDisappearanceVersatile:(UITabBarItem *)item {
     
     NSInteger delta = self.supplementaryViewPositionIndex - [self.tabBar.items indexOfObject:item];
@@ -125,105 +124,28 @@ CGFloat const animationDuration = 1.0;
     __block CGFloat relativeStartTimeForDisappearingView = disappearanceRate * animationDuration;
     [UIView animateKeyframesWithDuration:relativeStartTimeForDisappearingView delay:0.0 options:UIViewKeyframeAnimationOptionCalculationModeLinear animations:^{
         for (int i = 0; i < modulusDelta; i++) {
-            if (delta < 0) {
+            
             [UIView addKeyframeWithRelativeStartTime:relativeStartTimeForAppearingView relativeDuration:relativeDuration / modulusDelta animations:^{
                 
                 UIView *viewToReveal = nil;
                 
                 viewToReveal = [self.viewsArray objectAtIndex:self.supplementaryViewPositionIndex];
-        
+                
                 CGRect rectForViewToReveal = viewToReveal.frame;
-                rectForViewToReveal.origin.x = ((UIView *)[self.viewsArray objectAtIndex:self.viewPositionIndex]).frame.origin.x;
+                
+                if (delta < 0) {
+                    rectForViewToReveal.origin.x = ((UIView *)[self.viewsArray objectAtIndex:self.viewPositionIndex]).frame.origin.x;
+                }
                 rectForViewToReveal.size.width = 0.0;
                 
                 viewToReveal.frame = rectForViewToReveal;
-                ++self.supplementaryViewPositionIndex;
+                
+                self.supplementaryViewPositionIndex = delta < 0 ? self.supplementaryViewPositionIndex + 1 : self.supplementaryViewPositionIndex - 1;
             }];
-            } else if (delta > 0) {
-                [UIView addKeyframeWithRelativeStartTime:relativeStartTimeForAppearingView relativeDuration:relativeDuration / modulusDelta animations:^{
-                    
-                    UIView *viewToReveal = nil;
-                    
-                    viewToReveal = [self.viewsArray objectAtIndex:self.supplementaryViewPositionIndex];
-                    
-                    CGRect rectForViewToReveal = viewToReveal.frame;
-                    
-                    rectForViewToReveal.size.width = 0.0;
-                    
-                    viewToReveal.frame = rectForViewToReveal;
-                    relativeStartTimeForAppearingView += relativeDuration;
-                    --self.supplementaryViewPositionIndex;
-                }];
-            }
         }
     } completion:^(BOOL finished) {
         [self foldBackAllViewsButItem:item];
         self.tabBar.userInteractionEnabled = YES;
-    }];
-}
-
-- (void)animateDisappearance:(UITabBarItem *)item {
-    
-    NSInteger delta = self.supplementaryViewPositionIndex - [self.tabBar.items indexOfObject:item];
-    
-    CGFloat disappearanceRate = 0.35;
-    NSInteger modulusDelta = labs(delta);
-    __block CGFloat relativeStartTimeForAppearingView = 0.0;
-    __block CGFloat relativeDuration = (animationDuration / modulusDelta);
-    __block CGFloat relativeStartTimeForDisappearingView = disappearanceRate * animationDuration;
-    [UIView animateKeyframesWithDuration:relativeStartTimeForDisappearingView delay:0.0 options:UIViewKeyframeAnimationOptionCalculationModeLinear animations:^{
-        __block NSInteger position = 0;
-        for (int i = 0; i < modulusDelta; i++) {
-            
-            [UIView addKeyframeWithRelativeStartTime:relativeStartTimeForAppearingView relativeDuration:relativeDuration / modulusDelta animations:^{
-                
-                UIView *viewToReveal = nil;
-                viewToReveal = [self.viewsArray objectAtIndex:position];
-                CGRect rectForViewToReveal = viewToReveal.frame;
-                rectForViewToReveal.origin.x = ((UIView *)[self.viewsArray objectAtIndex:self.viewPositionIndex]).frame.origin.x;
-                rectForViewToReveal.size.width = 0.0;
-                
-                viewToReveal.frame = rectForViewToReveal;
-                ++position;
-            }];
-        }
-        
-    } completion:^(BOOL finished) {
-        [self foldBackAllViewsButItem:item];
-    }];
-}
-
-- (void)animateDisappearanceToLeft:(UITabBarItem *)item {
-    
-    NSInteger delta = self.supplementaryViewPositionIndex - [self.tabBar.items indexOfObject:item];
-    
-    CGFloat disappearanceRate = 0.35;
-    NSInteger modulusDelta = labs(delta);
-    __block CGFloat relativeStartTimeForAppearingView = 0.0;
-    __block CGFloat relativeDuration = (animationDuration / modulusDelta);
-    __block CGFloat relativeStartTimeForDisappearingView = disappearanceRate * animationDuration;
-    [UIView animateKeyframesWithDuration:relativeStartTimeForDisappearingView delay:0.0 options:UIViewKeyframeAnimationOptionCalculationModeLinear animations:^{
-        for (int i = 0; i < modulusDelta; i++) {
-            
-            [UIView addKeyframeWithRelativeStartTime:relativeStartTimeForAppearingView relativeDuration:relativeDuration / modulusDelta animations:^{
-                
-                UIView *viewToReveal = nil;
-                
-                viewToReveal = [self.viewsArray objectAtIndex:self.supplementaryViewPositionIndex];
-                CGRect rectForViewToReveal = viewToReveal.frame;
-                
-                rectForViewToReveal.size.width = 0.0;
-                
-                viewToReveal.frame = rectForViewToReveal;
-                relativeStartTimeForAppearingView += relativeDuration;
-                --self.supplementaryViewPositionIndex;
-            }];
-            
-        }
-        
-    } completion:^(BOOL finished) {
-        [self foldBackAllViewsButItem:item];
-        
     }];
 }
 
@@ -280,9 +202,7 @@ CGFloat const animationDuration = 1.0;
         } else {
             NSLog(@"No step! Error is: %@", error);
         }
-        self.tabBar.userInteractionEnabled = YES;
     }];
 }
 
 @end
-//
