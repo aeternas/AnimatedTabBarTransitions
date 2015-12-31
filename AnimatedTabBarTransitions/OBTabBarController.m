@@ -92,7 +92,7 @@ CGFloat const animationDuration = 1.0;
     [self rectForInitialView];
 }
 
-// setting frame for active view
+// setting frame for initially active view
 - (void)rectForInitialView {
     CGRect viewRect = self.actualView.frame;
     viewRect.size.width = self.tabBarWidth;
@@ -103,16 +103,20 @@ CGFloat const animationDuration = 1.0;
 - (void)tabBar:(UITabBar *)tabBar didSelectItem:(UITabBarItem *)item {
     // temporarily disable user interaction
     self.tabBar.userInteractionEnabled = NO;
+    // animation
     [self animateViewToPositionOfItem:item];
 }
 
-- (void)foldBackAllViewsButItem:(UITabBarItem *)item {
+// revert all views to their initial origin point
+- (void)returnAllViewsToOrigin {
     for (UIView *view in self.viewsArray) {
         CGRect viewRect = view.frame;
         viewRect.origin.x = ([self.viewsArray indexOfObject:view] * self.tabBarWidth);
         view.frame = viewRect;
     }
 }
+
+// disappearance animation
 - (void)animateDisappearanceVersatile:(UITabBarItem *)item {
     
     NSInteger delta = self.supplementaryViewPositionIndex - [self.tabBar.items indexOfObject:item];
@@ -122,6 +126,8 @@ CGFloat const animationDuration = 1.0;
     __block CGFloat relativeStartTimeForAppearingView = 0.0;
     __block CGFloat relativeDuration = (animationDuration / modulusDelta);
     __block CGFloat relativeStartTimeForDisappearingView = disappearanceRate * animationDuration;
+    
+    // using keyframes animation to calculate proper relative time automatically
     [UIView animateKeyframesWithDuration:relativeStartTimeForDisappearingView delay:0.0 options:UIViewKeyframeAnimationOptionCalculationModeLinear animations:^{
         for (int i = 0; i < modulusDelta; i++) {
             
@@ -140,14 +146,15 @@ CGFloat const animationDuration = 1.0;
                 rectForViewToReveal.size.width = 0.0;
                 
                 viewToReveal.frame = rectForViewToReveal;
-                
+
+                // increment start time for each new keyframe animation element for smoothness purposes
                 relativeStartTimeForAppearingView = delta > 0 ? relativeStartTimeForAppearingView + relativeDuration : relativeStartTimeForAppearingView;
                 
                 self.supplementaryViewPositionIndex = delta < 0 ? self.supplementaryViewPositionIndex + 1 : self.supplementaryViewPositionIndex - 1;
             }];
         }
     } completion:^(BOOL finished) {
-        [self foldBackAllViewsButItem:item];
+        [self returnAllViewsToOrigin];
         self.tabBar.userInteractionEnabled = YES;
     }];
 }
@@ -159,7 +166,7 @@ CGFloat const animationDuration = 1.0;
     __block CGFloat relativeStartTimeForAppearingView = 0.0;
     __block CGFloat relativeDuration = (animationDuration / modulusDelta);
     
-    // prep work for left-directed animation
+    // prep work for left-directed animation – move out origin of each view
     if (delta < 0) {
         for (UIView *view in self.viewsArray) {
             if ([self.viewsArray indexOfObject:view] !=  self.viewPositionIndex) {
@@ -188,10 +195,12 @@ CGFloat const animationDuration = 1.0;
                     rectForViewToReveal.size.width = self.tabBarWidth;
                     self.viewPositionIndex++;
                 } else if ([self.tabBar.items indexOfObject:item] < self.viewPositionIndex) {
+                    // for left-directed transition
                     rectForViewToReveal.size.width -= self.tabBarWidth;
                     self.viewPositionIndex--;
                 }
                 viewToReveal.frame = rectForViewToReveal;
+                // increment relative start time
                 relativeStartTimeForAppearingView += relativeDuration;
             }];
         }
