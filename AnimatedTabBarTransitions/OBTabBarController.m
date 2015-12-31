@@ -125,7 +125,7 @@ CGFloat const animationDuration = 1.0;
     [UIView animateKeyframesWithDuration:relativeStartTimeForDisappearingView delay:0.0 options:UIViewKeyframeAnimationOptionCalculationModeLinear animations:^{
         for (int i = 0; i < modulusDelta; i++) {
             
-            [UIView addKeyframeWithRelativeStartTime:relativeStartTimeForAppearingView relativeDuration:relativeDuration / modulusDelta animations:^{
+            [UIView addKeyframeWithRelativeStartTime:relativeStartTimeForAppearingView relativeDuration:relativeDuration animations:^{
                 
                 UIView *viewToReveal = nil;
                 
@@ -194,10 +194,7 @@ CGFloat const animationDuration = 1.0;
             }];
         }
     } completion:^(BOOL finished) {
-        if (delta > 0) {
-            self.supplementaryViewPositionIndex = [self.tabBar.items indexOfObject:self.tabBar.selectedItem];
-            [self animateDisappearanceVersatile:item];
-        } else if (delta < 0) {
+        if (delta) {
             self.supplementaryViewPositionIndex = [self.tabBar.items indexOfObject:self.tabBar.selectedItem];
             [self animateDisappearanceVersatile:item];
         } else {
