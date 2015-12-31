@@ -198,6 +198,7 @@ CGFloat const animationDuration = 1.0;
     } completion:^(BOOL finished) {
 //        [self foldBackAllViewsButItem:item];
         [self foldBackAllViewsButItemForLeft:item];
+        /*
         for (UIView *view in self.viewsArray) {
             if ([self.viewsArray indexOfObject:view] > [self.tabBar.items indexOfObject:item]) {
                 CGRect viewRect = view.frame;
@@ -206,6 +207,7 @@ CGFloat const animationDuration = 1.0;
                 view.frame = viewRect;
             }
         }
+         */
         /*
         for (UIView *view in self.viewsArray) {
             NSLog(@"origin of leftview is %.2f", view.frame.origin.x);
@@ -275,7 +277,7 @@ CGFloat const animationDuration = 1.0;
             [self animateDisappearance:item];
         } else {
             self.thirdViewPosition = [self.tabBar.items indexOfObject:self.tabBar.selectedItem];
-//            [self animateDisappearanceToLeft:item];
+            [self animateDisappearanceToLeft:item];
         }
         
         self.tabBar.userInteractionEnabled = YES;
