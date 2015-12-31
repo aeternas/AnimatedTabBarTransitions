@@ -10,11 +10,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "AnimatedTabBarTransitions/OBTabBarController.m"
-            timestampString = "473242745.498176"
+            timestampString = "473243351.062468"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "121"
-            endingLineNumber = "121"
+            startingLineNumber = "166"
+            endingLineNumber = "166"
             landmarkName = "-animateDisappearance:"
             landmarkType = "5">
          </BreakpointContent>
@@ -26,11 +26,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "AnimatedTabBarTransitions/OBTabBarController.m"
-            timestampString = "473242747.494615"
+            timestampString = "473243355.014405"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "152"
-            endingLineNumber = "152"
+            startingLineNumber = "197"
+            endingLineNumber = "197"
             landmarkName = "-animateDisappearanceToLeft:"
             landmarkType = "5">
          </BreakpointContent>
