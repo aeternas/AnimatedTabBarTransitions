@@ -12,17 +12,18 @@ NSString *const OBTabBarControllerErrorDomain = @"OBTabBarControllerErrorDomain"
 
 // globally define animation duration both for VCs and tabBarItems animations
 CGFloat const animationDuration = 1.0;
+CGFloat const dragWidth = 5.0;
 
 @interface OBTabBarController ()
 
-@property (nonatomic, readonly) NSArray     *viewsArray;
+@property (nonatomic, readonly) NSArray   *viewsArray;
 
-@property (nonatomic, readonly) UIView      *actualView;
+@property (nonatomic, readonly) UIView    *actualView;
 
-@property (nonatomic, assign) NSInteger     viewPositionIndex;
-@property (nonatomic, assign) NSInteger     supplementaryViewPositionIndex;
+@property (nonatomic, assign)   NSInteger viewPositionIndex;
+@property (nonatomic, assign)   NSInteger supplementaryViewPositionIndex;
 
-@property (nonatomic, assign) CGFloat       tabBarWidth;
+@property (nonatomic, assign)   CGFloat   tabBarWidth;
 
 @end
 
@@ -32,40 +33,40 @@ CGFloat const animationDuration = 1.0;
     [super viewDidLoad];
     
     // creating VCs for example
-    UIViewController *firstVC       = [UIViewController new];
-    UIViewController *secondVC      = [UIViewController new];
-    UIViewController *thirdVC       = [UIViewController new];
-    UIViewController *fourVC        = [UIViewController new];
-    UIViewController *fiveVC        = [UIViewController new];
+    UIViewController *firstVC     = [UIViewController new];
+    UIViewController *secondVC    = [UIViewController new];
+    UIViewController *thirdVC     = [UIViewController new];
+    UIViewController *fourVC      = [UIViewController new];
+    UIViewController *fiveVC      = [UIViewController new];
+
+    firstVC.view.backgroundColor  = [UIColor greenColor];
+    secondVC.view.backgroundColor = [UIColor yellowColor];
+    thirdVC.view.backgroundColor  = [UIColor blueColor];
+    fourVC.view.backgroundColor   = [UIColor magentaColor];
+    fiveVC.view.backgroundColor   = [UIColor grayColor];
+
+    self.viewControllers          = [[NSArray alloc]initWithObjects:firstVC, secondVC, thirdVC, fourVC, fiveVC, nil];
+
+    UITabBarItem *tabBarItemOne   = [self.tabBar.items objectAtIndex:0];
+    UITabBarItem *tabBarItemTwo   = [self.tabBar.items objectAtIndex:1];
+    UITabBarItem *tabBarItemThree = [self.tabBar.items objectAtIndex:2];
+    UITabBarItem *tabBarItemFour  = [self.tabBar.items objectAtIndex:3];
+    UITabBarItem *tabBarItemFive  = [self.tabBar.items objectAtIndex:4];
     
-    firstVC.view.backgroundColor    = [UIColor greenColor];
-    secondVC.view.backgroundColor   = [UIColor yellowColor];
-    thirdVC.view.backgroundColor    = [UIColor blueColor];
-    fourVC.view.backgroundColor     = [UIColor magentaColor];
-    fiveVC.view.backgroundColor     = [UIColor grayColor];
-    
-    self.viewControllers = [[NSArray alloc]initWithObjects:firstVC, secondVC, thirdVC, fourVC, fiveVC, nil];
-    
-    UITabBarItem *tabBarItemOne     = [self.tabBar.items objectAtIndex:0];
-    UITabBarItem *tabBarItemTwo     = [self.tabBar.items objectAtIndex:1];
-    UITabBarItem *tabBarItemThree   = [self.tabBar.items objectAtIndex:2];
-    UITabBarItem *tabBarItemFour    = [self.tabBar.items objectAtIndex:3];
-    UITabBarItem *tabBarItemFive    = [self.tabBar.items objectAtIndex:4];
-    
-    tabBarItemOne.title = @"FirstVC";
-    tabBarItemTwo.title = @"SecondVC";
+    tabBarItemOne.title   = @"FirstVC";
+    tabBarItemTwo.title   = @"SecondVC";
     tabBarItemThree.title = @"ThirdVC";
-    tabBarItemFour.title = @"FourthVC";
-    tabBarItemFive.title = @"FifthVC";
+    tabBarItemFour.title  = @"FourthVC";
+    tabBarItemFive.title  = @"FifthVC";
     
     // width of one tab bar item
     self.tabBarWidth = self.tabBar.frame.size.width / self.viewControllers.count;
     
-    UIColor *customRedColor = [UIColor colorWithRed:212.0/255.0 green:108.0/255.0 blue:96.0/255.0 alpha:1.0];
-    UIColor *customYellowColor = [UIColor colorWithRed:243.0/255.0 green:188.0/255.0 blue:123.0/255.0 alpha:1.0];
-    UIColor *customBlueColor = [UIColor colorWithRed:127.0/255.0 green:175.0/255.0 blue:205.0/255.0 alpha:1.0];
+    UIColor *customRedColor     = [UIColor colorWithRed:212.0/255.0 green:108.0/255.0 blue:96.0/255.0 alpha:1.0];
+    UIColor *customYellowColor  = [UIColor colorWithRed:243.0/255.0 green:188.0/255.0 blue:123.0/255.0 alpha:1.0];
+    UIColor *customBlueColor    = [UIColor colorWithRed:127.0/255.0 green:175.0/255.0 blue:205.0/255.0 alpha:1.0];
     UIColor *customMagentaColor = [UIColor colorWithRed:211.0/255.0 green:118.0/255.0 blue:153.0/255.0 alpha:1.0];
-    UIColor *customGreenColor = [UIColor colorWithRed:136.0/255.0 green:202.0/255.0 blue:180.0/255.0 alpha:1.0];
+    UIColor *customGreenColor   = [UIColor colorWithRed:136.0/255.0 green:202.0/255.0 blue:180.0/255.0 alpha:1.0];
     
     NSArray *colors = [[NSArray alloc]initWithObjects:customRedColor, customYellowColor, customBlueColor, customMagentaColor, customGreenColor, nil];
     
@@ -107,15 +108,6 @@ CGFloat const animationDuration = 1.0;
     [self animateViewToPositionOfItem:item];
 }
 
-// revert all views to their initial origin point
-- (void)returnAllViewsToOrigin {
-    for (UIView *view in self.viewsArray) {
-        CGRect viewRect = view.frame;
-        viewRect.origin.x = ([self.viewsArray indexOfObject:view] * self.tabBarWidth);
-        view.frame = viewRect;
-    }
-}
-
 // disappearance animation
 - (void)animateDisappearanceVersatile:(UITabBarItem *)item {
     
@@ -154,7 +146,28 @@ CGFloat const animationDuration = 1.0;
             }];
         }
     } completion:^(BOOL finished) {
-        [self returnAllViewsToOrigin];
+        
+        if (delta != 0) {
+            [UIView animateWithDuration:animationDuration animations:^{
+                UIView *viewToDrag = ((UIView *)[self.viewsArray objectAtIndex:self.supplementaryViewPositionIndex]);
+                CGRect RectForViewToDrag = viewToDrag.frame;
+                if (delta < 0) {
+                    RectForViewToDrag.size.width = RectForViewToDrag.size.width - dragWidth;
+                } else if (delta > 0) {
+                    RectForViewToDrag.origin.x += dragWidth;
+                    RectForViewToDrag.size.width -= dragWidth;
+                }
+                viewToDrag.frame = RectForViewToDrag;
+            }];
+        }
+        // revert all views to their initial origin point
+        for (UIView *view in self.viewsArray) {
+            if (view != ((UIView *)[self.viewsArray objectAtIndex:self.supplementaryViewPositionIndex])) {
+                CGRect viewRect = view.frame;
+                viewRect.origin.x = ([self.viewsArray indexOfObject:view] * self.tabBarWidth);
+                view.frame = viewRect;
+            }
+        }
         self.tabBar.userInteractionEnabled = YES;
     }];
 }
@@ -192,24 +205,29 @@ CGFloat const animationDuration = 1.0;
                 }
                 CGRect rectForViewToReveal = viewToReveal.frame;
                 if ([self.tabBar.items indexOfObject:item] > self.viewPositionIndex) {
-                    rectForViewToReveal.size.width = self.tabBarWidth;
+                    
+                    rectForViewToReveal.size.width = self.tabBarWidth + dragWidth;
                     self.viewPositionIndex++;
                 } else if ([self.tabBar.items indexOfObject:item] < self.viewPositionIndex) {
                     // for left-directed transition
-                    rectForViewToReveal.size.width -= self.tabBarWidth;
+                    rectForViewToReveal.size.width = rectForViewToReveal.size.width - self.tabBarWidth - dragWidth;
                     self.viewPositionIndex--;
                 }
                 viewToReveal.frame = rectForViewToReveal;
+                
                 // increment relative start time
                 relativeStartTimeForAppearingView += relativeDuration;
             }];
         }
+        
     } completion:^(BOOL finished) {
+        
         if (delta) {
             self.supplementaryViewPositionIndex = [self.tabBar.items indexOfObject:self.tabBar.selectedItem];
             [self animateDisappearanceVersatile:item];
         } else {
             NSLog(@"No step! Error is: %@", error);
+            self.tabBar.userInteractionEnabled = YES;
         }
     }];
 }
