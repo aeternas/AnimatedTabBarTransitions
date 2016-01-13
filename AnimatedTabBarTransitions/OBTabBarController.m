@@ -11,7 +11,7 @@
 NSString *const OBTabBarControllerErrorDomain = @"OBTabBarControllerErrorDomain";
 
 // globally define animation duration both for VCs and tabBarItems animations
-CGFloat const animationDuration = 0.85;
+CGFloat const animationDuration = 0.75;
 
 @interface OBTabBarController ()
 
@@ -107,20 +107,21 @@ CGFloat const animationDuration = 0.85;
 - (void)animateViewToPositionOfItem:(UITabBarItem *)item {
     // get gap between initial and target tabbaritem
     NSInteger delta = [self.tabBar.items indexOfObject:item] - self.viewPosition;
-    CGFloat disappearanceRate = 0.9;
+    CGFloat disappearanceRate = 0.65;
     NSError *error = [NSError errorWithDomain:OBTabBarControllerErrorDomain code:0 userInfo:nil];
-    [UIView animateKeyframesWithDuration:animationDuration delay:0.0 options:UIViewKeyframeAnimationOptionCalculationModeLinear | UIViewAnimationOptionCurveEaseInOut animations:^{
+    [UIView animateKeyframesWithDuration:animationDuration delay:0.0 options:UIViewKeyframeAnimationOptionCalculationModeLinear | UIViewAnimationOptionCurveEaseIn animations:^{
         // get absolute value in order to code right-to-left animations
         NSInteger modulusDelta = labs(delta);
         __block CGFloat relativeStartTimeForAppearingView = 0.0;
         __block CGFloat relativeDuration = (animationDuration / modulusDelta);
         __block CGFloat relativeDurationForDisappearingView = disappearanceRate * relativeDuration;
-        __block CGFloat relativeStartTimeForDisappearingView = disappearanceRate * animationDuration;
+//        __block CGFloat relativeStartTimeForDisappearingView = disappearanceRate * animationDuration;
+        __block CGFloat relativeStartTimeForDisappearingView = 0.35;
         for (int i = 0; i < modulusDelta; i++) {
             
             // using "child" keyframe animations
             // this part is responsible for disappearance of view
-            NSLog(@"start: %.2f, duration: %.2f", relativeStartTimeForDisappearingView, relativeDurationForDisappearingView);
+            NSLog(@"startApp: %.2f, durationApp: %.2f, startDisapp: %.2f, durationDisapp: %.2f", relativeStartTimeForAppearingView, relativeDuration, relativeStartTimeForDisappearingView, relativeDurationForDisappearingView);
             [UIView addKeyframeWithRelativeStartTime:relativeStartTimeForDisappearingView relativeDuration:relativeDurationForDisappearingView animations:^{
                 
                 
