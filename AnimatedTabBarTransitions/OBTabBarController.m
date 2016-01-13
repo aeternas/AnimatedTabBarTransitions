@@ -23,6 +23,8 @@ CGFloat const animationDuration = 0.75;
 
 @property (nonatomic, assign) CGFloat       tabBarWidth;
 
+@property (nonatomic, readonly) UIView      *viewToReveal;
+
 @end
 
 @implementation OBTabBarController
@@ -109,6 +111,34 @@ CGFloat const animationDuration = 0.75;
     NSInteger delta = [self.tabBar.items indexOfObject:item] - self.viewPosition;
     CGFloat disappearanceRate = 0.65;
     NSError *error = [NSError errorWithDomain:OBTabBarControllerErrorDomain code:0 userInfo:nil];
+    NSInteger modulusDelta = labs(delta);
+    __block CGFloat relativeStartTimeForAppearingView = 0.0;
+    __block CGFloat relativeDuration = (animationDuration / modulusDelta);
+    __block CGFloat relativeDurationForDisappearingView = disappearanceRate * relativeDuration;
+    //        __block CGFloat relativeStartTimeForDisappearingView = disappearanceRate * animationDuration;
+    __block CGFloat relativeStartTimeForDisappearingView = 0.35;
+    [UIView animateKeyframesWithDuration:1.0 delay:0.0 options:UIViewKeyframeAnimationOptionCalculationModeLinear animations:^{
+        [UIView addKeyframeWithRelativeStartTime:0.0 relativeDuration:0.6 animations:^{
+            _viewToReveal = nil;
+                // get view which frames should be unwrapped
+                _viewToReveal = [self.viewsArray objectAtIndex:self.viewPosition + 1];
+                // for right-to-left transition
+            CGRect rectForViewToReveal = _viewToReveal.frame;
+                rectForViewToReveal.size.width = self.tabBarWidth / 3.0;
+            _viewToReveal.frame = rectForViewToReveal;
+            relativeStartTimeForAppearingView += relativeDuration;
+
+        }];
+        [UIView addKeyframeWithRelativeStartTime:0.4 relativeDuration:0.4 animations:^{
+//            UIView *viewToReveal = nil;
+            CGRect rectForViewToReveal = _viewToReveal.frame;
+                rectForViewToReveal.size.width = self.tabBarWidth;
+            
+            _viewToReveal.frame = rectForViewToReveal;
+            relativeStartTimeForAppearingView += relativeDuration;
+        }];
+    } completion:nil];
+    /*
     [UIView animateKeyframesWithDuration:animationDuration delay:0.0 options:UIViewKeyframeAnimationOptionCalculationModeLinear | UIViewAnimationOptionCurveEaseIn animations:^{
         // get absolute value in order to code right-to-left animations
         NSInteger modulusDelta = labs(delta);
@@ -167,6 +197,7 @@ CGFloat const animationDuration = 0.75;
         // enable user interaction
         self.tabBar.userInteractionEnabled = YES;
     }];
+     */
 }
 
 @end
