@@ -146,9 +146,9 @@ CGFloat const dragWidth = 5.0;
             }];
         }
     } completion:^(BOOL finished) {
-        
+        // drag animations
         if (delta != 0) {
-            [UIView animateWithDuration:animationDuration animations:^{
+            [UIView animateWithDuration:animationDuration / 2.0 animations:^{
                 UIView *viewToDrag = ((UIView *)[self.viewsArray objectAtIndex:self.supplementaryViewPositionIndex]);
                 CGRect RectForViewToDrag = viewToDrag.frame;
                 if (delta < 0) {
