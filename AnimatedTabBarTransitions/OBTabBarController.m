@@ -11,7 +11,7 @@
 NSString *const OBTabBarControllerErrorDomain = @"OBTabBarControllerErrorDomain";
 
 // globally define animation duration both for VCs and tabBarItems animations
-CGFloat const animationDuration = 1.0;
+CGFloat const animationDuration = 0.85;
 
 @interface OBTabBarController ()
 
