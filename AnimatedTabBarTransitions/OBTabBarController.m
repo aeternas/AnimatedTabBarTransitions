@@ -118,67 +118,83 @@ CGFloat const animationDuration = 0.75;
     //        __block CGFloat relativeStartTimeForDisappearingView = disappearanceRate * animationDuration;
     __block CGFloat relativeStartTimeForDisappearingView = 0.35;
     
+    
+    
     for (NSInteger i = 0; i < modulusDelta; ++i) {
     
-    [UIView animateKeyframesWithDuration:1.0 delay:0.0 options:UIViewKeyframeAnimationOptionCalculationModeLinear animations:^{
+    [UIView animateKeyframesWithDuration:1.0 delay:(0.0 + i) options:UIViewKeyframeAnimationOptionCalculationModeLinear animations:^{
         [UIView addKeyframeWithRelativeStartTime:0.0 relativeDuration:0.7 animations:^{
             self.viewToReveal = nil;
                 // get view which frames should be unwrapped
             if (delta > 0) {
-                self.viewToReveal = [self.viewsArray objectAtIndex:self.viewPosition + 1 + i];
+                self.viewToReveal = [self.viewsArray objectAtIndex:self.viewPosition + 1];
             } else if (delta < 0) {
                 self.viewToReveal = [self.viewsArray objectAtIndex:self.viewPosition - 1];
             }
                 // for right-to-left transition
             if ([self.tabBar.items indexOfObject:item] > self.viewPosition) {
-                self.viewToReveal.frame = ({
-                    CGRect frame = self.viewToReveal.frame;
-                    frame.size.width += self.tabBarWidth / 3.0;
-                    frame;
-                });
+                    self.viewToReveal.frame = ({
+                        CGRect frame = self.viewToReveal.frame;
+                        frame.size.width += self.tabBarWidth / 3.0;
+                        frame;
+                    });
             } else if ([self.tabBar.items indexOfObject:item] < self.viewPosition) {
-                self.viewToReveal.frame = ({
-                    CGRect frame = self.viewToReveal.frame;
-                    frame.size.width = 0.0;
-                    frame.size.width -= self.tabBarWidth / 3.0;
-                    frame;
-                });
+                    self.viewToReveal.frame = ({
+                        CGRect frame = self.viewToReveal.frame;
+//                        frame.size.width = 0.0;
+                        frame.size.width = -(self.tabBarWidth / 3.0);
+                        frame;
+                    });
             }
-            
             relativeStartTimeForAppearingView += relativeDuration;
         }];
         [UIView addKeyframeWithRelativeStartTime:0.7 relativeDuration:0.3 animations:^{
             if (delta > 0) {
-                self.viewToReveal.frame = ({
-                    CGRect frame = self.viewToReveal.frame;
-                    frame.size.width += self.tabBarWidth * (2.0/3.0);
-                    frame;
-                });
+                    self.viewToReveal.frame = ({
+                        CGRect frame = self.viewToReveal.frame;
+                        frame.size.width += self.tabBarWidth * (2.0 / 3.0);
+                        frame;
+                    });
             } else if (delta < 0) {
                 self.viewToReveal.frame = ({
                     CGRect frame = self.viewToReveal.frame;
-                    frame.size.width = -(self.tabBarWidth * (3.0 / 3.0));
+//                    frame.size.width -= (self.tabBarWidth * (2.0 / 3.0));
+                    frame.size.width = -(self.viewToReveal.frame.size.width + self.tabBarWidth * (2/3)) ;
                     frame;
                 });
             }
             relativeStartTimeForAppearingView += relativeDuration;
         }];
     } completion:^(BOOL finished) {
+        /*
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [CATransaction begin];
+            CABasicAnimation *basicAnimation = [CABasicAnimation animationWithKeyPath:@"translation.y"];
+            
+            basicAnimation.fromValue = @(0.0);
+            basicAnimation.toValue = @(100.0);
+            
+            [self.viewToReveal.layer addAnimation:basicAnimation forKey:@"translation.y"];
+            [CATransaction commit];
+        });
+         */
         self.tabBar.userInteractionEnabled = YES;
+        
     }];
-    }
-    [UIView animateWithDuration:0.3 delay:0.7 options:UIViewAnimationOptionCurveEaseIn animations:^{
+    
+    [UIView animateWithDuration:0.3 delay:(0.7 + i) options:UIViewAnimationOptionCurveEaseIn animations:^{
         UIView *viewToDisappear = [self.viewsArray objectAtIndex:self.viewPosition];
+        if (delta > 0) {
         viewToDisappear.frame = ({
             CGRect frame = viewToDisappear.frame;
-            if ([self.tabBar.items indexOfObject:item] > self.viewPosition) {
-                frame.origin.x = ((UIView *)[self.viewsArray objectAtIndex:self.viewPosition + 1]).frame.origin.x;
-            }
+            frame.origin.x = ((UIView *)[self.viewsArray objectAtIndex:self.viewPosition + 1]).frame.origin.x;
             frame.size.width = 0.0;
             frame;
         });
-        self.viewPosition++;
+            self.viewPosition++;
+        }
     } completion:nil];
+}
     /*
     [UIView animateKeyframesWithDuration:animationDuration delay:0.0 options:UIViewKeyframeAnimationOptionCalculationModeLinear | UIViewAnimationOptionCurveEaseIn animations:^{
         // get absolute value in order to code right-to-left animations
