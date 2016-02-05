@@ -134,28 +134,28 @@ CGFloat const animationDuration = 0.75;
     CGAffineTransform scaleOne = CGAffineTransformMakeScale(2.0, 1.0);
 //    self.someView.layer.anchorPoint = CGPointMake(1.0, 0.5);
     CGFloat sizeToChange = 64;
-    __block UIView *view = self.someView;
-    view.frame = ({
-        CGRect frame = view.frame;
+//    UIView *view = self.someView;
+    self.someView.frame = ({
+        CGRect frame = self.someView.frame;
         frame.size.width = 0;
         frame;
     });
     [UIView animateWithDuration:1.0 animations:^{
-        view.frame = ({
-            CGRect frame = view.frame;
+        self.someView.frame = ({
+            CGRect frame = self.someView.frame;
             frame.size.width -= (sizeToChange / 3.0);
             frame;
         });
     } completion:^(BOOL finished) {
         
         [UIView animateWithDuration:1.0 animations:^{
-            view.frame = ({
-                CGRect frame = view.frame;
+            self.someView.frame = ({
+                CGRect frame = self.someView.frame;
                 frame.origin.x += (sizeToChange / 3.0);
                 frame;
             });
-            view.frame = ({
-                CGRect frame = view.frame;
+            self.someView.frame = ({
+                CGRect frame = self.someView.frame;
                 frame.size.width -= ((sizeToChange / 3.0) * 4.0);
                 frame;
             });
