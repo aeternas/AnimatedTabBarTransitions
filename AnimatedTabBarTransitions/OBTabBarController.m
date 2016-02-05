@@ -127,19 +127,44 @@ CGFloat const animationDuration = 0.75;
     
     self.someView = [self.viewsArray objectAtIndex:self.viewPosition];
     
+    CGAffineTransform transformFirst = CGAffineTransformMakeTranslation(-self.someView.bounds.size.width / 3.0, 0.0);
+    
+    CGAffineTransform transformSecond = CGAffineTransformMakeTranslation(-self.someView.bounds.size.width * (2/3), 0.0);
+    
+    CGAffineTransform scaleOne = CGAffineTransformMakeScale(2.0, 1.0);
+//    self.someView.layer.anchorPoint = CGPointMake(1.0, 0.5);
+    CGFloat sizeToChange = 64;
+    __block UIView *view = self.someView;
+    view.frame = ({
+        CGRect frame = view.frame;
+        frame.size.width = 0;
+        frame;
+    });
     [UIView animateWithDuration:1.0 animations:^{
-        CGRect frame = self.someView.frame;
-        frame.origin.x = 0.0;
-        self.someView.frame = frame;
-        self.someView.transform = CGAffineTransformScale(CGAffineTransformIdentity, 2.0, 1.0);
+        view.frame = ({
+            CGRect frame = view.frame;
+            frame.size.width -= (sizeToChange / 3.0);
+            frame;
+        });
     } completion:^(BOOL finished) {
         
-        [UIView beginAnimations:nil context:nil];
-        [UIView setAnimationDuration:5.3];
-        [UIView commitAnimations];
-         
+        [UIView animateWithDuration:1.0 animations:^{
+            view.frame = ({
+                CGRect frame = view.frame;
+                frame.origin.x += (sizeToChange / 3.0);
+                frame;
+            });
+            view.frame = ({
+                CGRect frame = view.frame;
+                frame.size.width -= ((sizeToChange / 3.0) * 4.0);
+                frame;
+            });
+        }];
     }];
-    
+}
+
+-(void)viewDidLayoutSubviews {
+    self.someView.layer.anchorPoint = CGPointMake(1.0, 0.5);
     
 }
 

@@ -28,6 +28,16 @@
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
       shouldUseLaunchSchemeArgsEnv = "YES">
       <Testables>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "45180CFB1C648D3B00CC46CF"
+               BuildableName = "AnimatedTabBarTransitionsUITests.xctest"
+               BlueprintName = "AnimatedTabBarTransitionsUITests"
+               ReferencedContainer = "container:AnimatedTabBarTransitions.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
       </Testables>
       <MacroExpansion>
          <BuildableReference
