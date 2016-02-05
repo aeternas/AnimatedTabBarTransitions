@@ -23,7 +23,6 @@ CGFloat const animationDuration = 0.75;
 
 @property (nonatomic, assign) CGFloat       tabBarWidth;
 
-@property (nonatomic, strong) UIView      *viewToReveal;
 
 @end
 
@@ -139,12 +138,11 @@ CGFloat const animationDuration = 0.75;
                         frame;
                     });
             } else if ([self.tabBar.items indexOfObject:item] < self.viewPosition) {
-                    self.viewToReveal.frame = ({
-                        CGRect frame = self.viewToReveal.frame;
-//                        frame.size.width = 0.0;
-                        frame.size.width = -(self.tabBarWidth / 3.0);
-                        frame;
-                    });
+                self.viewToReveal.frame = ({
+                    CGRect frame = self.viewToReveal.frame;
+                    frame.size.width = -(self.tabBarWidth / 3.0);
+                    frame;
+                });
             }
             relativeStartTimeForAppearingView += relativeDuration;
         }];
@@ -159,7 +157,8 @@ CGFloat const animationDuration = 0.75;
                 self.viewToReveal.frame = ({
                     CGRect frame = self.viewToReveal.frame;
 //                    frame.size.width -= (self.tabBarWidth * (2.0 / 3.0));
-                    frame.size.width = -(self.viewToReveal.frame.size.width + self.tabBarWidth * (2/3)) ;
+                    frame.origin.x += (self.tabBarWidth / 3.0);
+                    frame.size.width -= ((self.tabBarWidth / 3.0) * 4.0) ;
                     frame;
                 });
             }

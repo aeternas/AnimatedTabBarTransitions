@@ -14,4 +14,6 @@ extern CGFloat const animationDuration;
 
 @interface OBTabBarController : UITabBarController
 
+@property (nonatomic, strong) UIView      *viewToReveal;
+
 @end
